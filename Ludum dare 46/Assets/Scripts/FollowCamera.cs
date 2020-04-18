@@ -43,19 +43,23 @@ public class FollowCamera : MonoBehaviour
         //X
         if (player.position.x > transform.position.x + Boundsmax.x)
         {
-            targetPos.x = transform.position.x + Boundsmax.x;
+            float x  = player.position.x - (transform.position.x + Boundsmax.x);
+            targetPos.x = transform.position.x + x;
         }
         if (player.position.x < transform.position.x + Boundsmin.x)
         {
-            targetPos.x = transform.position.x + Boundsmin.x;
+            float x = player.position.x - (transform.position.x + Boundsmin.x);
+            targetPos.x = transform.position.x + x;
         }
         if (player.position.y > transform.position.y + Boundsmax.y)
         {
-            targetPos.y = transform.position.y + Boundsmax.y;
+            float y = player.position.y - (transform.position.y + Boundsmax.y);
+            targetPos.y = transform.position.y + y;
         }
         if (player.position.y < transform.position.y + Boundsmin.y)
         {
-            targetPos.y = transform.position.y + Boundsmin.y;
+            float y = player.position.y - (transform.position.y + Boundsmin.y);
+            targetPos.y = transform.position.y + y;
         }
 
     }
