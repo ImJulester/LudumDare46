@@ -34,16 +34,14 @@ public class Player : MonoBehaviour
                 rb2d.AddForce(new Vector2(Mathf.Sign(Input.GetAxis("C_Horizontal")) * moveSpeed, 0));
             }
         }
-        else
-        {
            
 
-            if (Input.GetAxis("Horizontal") != 0)
-            {
+        if (Input.GetAxis("Horizontal") != 0)
+        {
 
-                rb2d.AddForce(new Vector2(Mathf.Sign(Input.GetAxis("Horizontal")) * moveSpeed, 0));
-            }
+            rb2d.AddForce(new Vector2(Mathf.Sign(Input.GetAxis("Horizontal")) * moveSpeed, 0));
         }
+        
        
 
     }
@@ -57,13 +55,11 @@ public class Player : MonoBehaviour
                 rb2d.AddForce(Vector2.up * jumpForce);
             }
         }
-        else
-        {
-            if (Input.GetButtonDown("Jump") && IsGrounded())
-            {
-                rb2d.AddForce(Vector2.up * jumpForce);
-            }
-        }
+         if (Input.GetButtonDown("Jump") && IsGrounded())
+         {
+            rb2d.AddForce(Vector2.up * jumpForce);
+         }
+        
     }
 
 

@@ -10,6 +10,7 @@ public class FollowCamera : MonoBehaviour
     public float smoothSpeed = 0.125f;
 
     private Vector3 velocity = Vector3.zero;
+    private Vector3 targetPos = Vector3.zero;
 
     public Vector2 Boundsmin;
     public Vector2 Boundsmax;
@@ -17,61 +18,44 @@ public class FollowCamera : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
+        transform.position = new Vector3(player.position.x, player.position.y, -10);
+        targetPos = new Vector3(player.position.x, player.position.y, -10);
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
-        Debug.Log(PlayerOutOfCameraBounds(true));
-        //if (PlayerOutOfCameraBounds(true))
-        //{
-         //   MoveToPlayerXAxis();
-        //}
-       // if (PlayerOutOfCameraBounds(false))
-        //{
-       //     MoveToPlayerYAxis();
-       // }
 
+        SetTargetPos();
+
+        MoveToPlayer();
     }
 
 
-    void MoveToPlayerXAxis()
+    void MoveToPlayer()
     {
-        Vector3 targetPos = Vector3.SmoothDamp(transform.position, player.position, ref velocity, smoothSpeed);
-        transform.position = new Vector3(targetPos.x, transform.position.y, -10);
+        Vector3 pos = Vector3.SmoothDamp(transform.position, targetPos, ref velocity, smoothSpeed);
+        transform.position = new Vector3(pos.x, pos.y, -10);
     }
 
-    void MoveToPlayerYAxis()
+    void SetTargetPos()
     {
-        Vector3 targetPos = Vector3.SmoothDamp(transform.position, player.position, ref velocity, smoothSpeed);
-        transform.position = new Vector3(transform.position.x, targetPos.y, -10);
-    }
-
-    bool PlayerOutOfCameraBounds(bool xAxis)
-    {
-        if (xAxis)
+        //X
+        if (player.position.x > transform.position.x + Boundsmax.x)
         {
-            if (player.position.x > transform.position.x + Boundsmax.x || player.position.x < transform.position.x - Boundsmin.x)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-
+            targetPos.x = transform.position.x + Boundsmax.x;
         }
-        else
+        if (player.position.x < transform.position.x + Boundsmin.x)
         {
-            if (player.position.y > transform.position.y + Boundsmax.y || player.position.y < transform.position.y - Boundsmin.y)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            targetPos.x = transform.position.x + Boundsmin.x;
+        }
+        if (player.position.y > transform.position.y + Boundsmax.y)
+        {
+            targetPos.y = transform.position.y + Boundsmax.y;
+        }
+        if (player.position.y < transform.position.y + Boundsmin.y)
+        {
+            targetPos.y = transform.position.y + Boundsmin.y;
         }
 
     }
