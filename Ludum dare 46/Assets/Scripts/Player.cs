@@ -44,7 +44,7 @@ public class Player : MonoBehaviour
         gravity = gravity / 100.0f;
         friction = friction / 100.0f;
         turnAroundSpeed = turnAroundSpeed / 100.0f;
-
+        
 
         collider = GetComponent<BoxCollider2D>();
     }
@@ -92,17 +92,17 @@ public class Player : MonoBehaviour
                 }
             }
 
-        if (Mathf.Abs(velocityX) > 0.01)
+        if (Mathf.Abs(velocityX) > 0)
         {
             if (Input.GetAxis("C_Horizontal") == 0 && Input.GetAxis("Horizontal") == 0)
             {
                 velocityX = Mathf.MoveTowards(velocityX, 0, decellerationRate * Time.deltaTime);
             }
         }
-        else
+        /*else
         {
             velocityX = 0;
-        }
+        }*/
 
 
         /*if (!grounded)
@@ -328,12 +328,14 @@ public class Player : MonoBehaviour
             if (collided)
             {
                 finalVelocityY = -collidedDistance;
-                Grounded();
+                Grounded(true);
                 return true;
             }
         }
         finalVelocityY = velocityY;
+        Grounded(false);
         return false;
+
     }
 
     void Move(float x, float y)
@@ -342,8 +344,17 @@ public class Player : MonoBehaviour
         transform.position = transform.position +  new Vector3(x, y,0);
     }
 
-    void Grounded()
+    void Grounded(bool isGrounded)
     {
-        grounded = true;
+        if (isGrounded)
+        {
+            grounded = true;
+            velocityY = 0;
+        }
+        if (!isGrounded)
+        {
+            grounded = false;
+        }
+
     }
 }
