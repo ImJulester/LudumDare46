@@ -11,6 +11,7 @@ public class Player1 : MonoBehaviour
     private BoxCollider2D boxCollider;
     private Rigidbody2D rb2d;
 
+    public ParticleSystem groundHitParticle;
 
     public float jumpForce;
     public float moveSpeed;
@@ -36,17 +37,33 @@ public class Player1 : MonoBehaviour
             if (Mathf.Abs(Input.GetAxis("C_Horizontal"))> 0.2f)
             {
                 rb2d.AddForce(new Vector2(Mathf.Sign(Input.GetAxis("C_Horizontal")) * moveSpeed, 0));
+                anim.SetBool("Running", true);
             }
         }
-           
+
+        Debug.Log(rb2d.velocity);
+
+        if(rb2d.velocity.x < 0)
+        {
+            transform.localScale = new Vector3(-3.75f, 3.75f, 3.75f);
+        }
+        else
+        {
+            transform.localScale = new Vector3(3.75f, 3.75f, 3.75f);
+        }
 
         if (Input.GetAxis("Horizontal") != 0)
         {
 
             rb2d.AddForce(new Vector2(Mathf.Sign(Input.GetAxis("Horizontal")) * moveSpeed, 0));
+            anim.SetBool("Running", true);
         }
-        
-       
+        else
+        {
+            anim.SetBool("Running", false);
+        }
+
+
 
     }
 
@@ -57,6 +74,7 @@ public class Player1 : MonoBehaviour
             if (jumped)
             {
                 anim.SetTrigger("Landing");
+                GameObject.Instantiate(groundHitParticle.gameObject, transform.position + new Vector3(0,-0.5f,-0.1f), groundHitParticle.gameObject.transform.rotation);
                 jumped = false;
             }
         }
@@ -65,23 +83,21 @@ public class Player1 : MonoBehaviour
         {
             if (Input.GetButtonDown("C_Jump") && IsGrounded())
             {
-                rb2d.AddForce(Vector2.up * jumpForce);
+                //rb2d.AddForce(Vector2.up * jumpForce);
                 anim.SetTrigger("Jump");
-                jumped = true;
             }
         }
          if (Input.GetButtonDown("Jump") && IsGrounded())
          {
-            rb2d.AddForce(Vector2.up * jumpForce);
+            //rb2d.AddForce(Vector2.up * jumpForce);
             anim.SetTrigger("Jump");
-            jumped = true;
         }
         
     }
 
     bool IsGrounded()
     {
-        float extraHeight = 0.02f;
+        float extraHeight = 0.01f;
         bool result;
         result = Physics2D.BoxCast(boxCollider.bounds.center, boxCollider.bounds.size, 0f, Vector2.down, extraHeight, groundLayermask);
 
@@ -96,5 +112,13 @@ public class Player1 : MonoBehaviour
 
         return result;
     }
+    public void Jump()
+    {
+        rb2d.AddForce(Vector2.up * jumpForce); 
+    }
 
+    public void CheckJumped()
+    {
+        jumped = true;
+    }
 }
