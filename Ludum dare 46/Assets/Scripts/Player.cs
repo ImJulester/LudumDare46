@@ -23,6 +23,31 @@ public class Player : MonoBehaviour
     }
 
     // Update is called once per frame
+    void FixedUpdate()
+    {
+        if (Input.GetJoystickNames().Length > 0)
+        {
+            
+
+            if (Mathf.Abs(Input.GetAxis("C_Horizontal"))> 0.2f)
+            {
+                rb2d.AddForce(new Vector2(Mathf.Sign(Input.GetAxis("C_Horizontal")) * moveSpeed, 0));
+            }
+        }
+        else
+        {
+           
+
+            if (Input.GetAxis("Horizontal") != 0)
+            {
+
+                rb2d.AddForce(new Vector2(Mathf.Sign(Input.GetAxis("Horizontal")) * moveSpeed, 0));
+            }
+        }
+       
+
+    }
+
     void Update()
     {
         if (Input.GetJoystickNames().Length > 0)
@@ -31,12 +56,6 @@ public class Player : MonoBehaviour
             {
                 rb2d.AddForce(Vector2.up * jumpForce);
             }
-
-            if (Mathf.Abs(Input.GetAxis("C_Horizontal"))> 0.2f)
-            {
-                rb2d.AddForce(new Vector2(Mathf.Sign(Input.GetAxis("C_Horizontal")) * moveSpeed * Time.deltaTime, 0));
-                //rb2d.velocity = new Vector2(Mathf.Sign(Input.GetAxis("C_Horizontal")) * moveSpeed * Time.deltaTime, rb2d.velocity.y);
-            }
         }
         else
         {
@@ -44,26 +63,7 @@ public class Player : MonoBehaviour
             {
                 rb2d.AddForce(Vector2.up * jumpForce);
             }
-
-            if (Input.GetAxis("Horizontal") != 0)
-            {
-
-                rb2d.velocity = new Vector2(Input.GetAxis("Horizontal") * moveSpeed * Time.deltaTime, rb2d.velocity.y);
-            }
         }
-
-        /*if (Input.GetButtonDown("Jump") && IsGrounded())
-        {
-            rb2d.AddForce(Vector2.up * jumpForce);
-        }   
-
-        if(Input.GetAxis("Horizontal") != 0)
-        {
-            
-            rb2d.velocity = new Vector2(Input.GetAxis("Horizontal") * moveSpeed, rb2d.velocity.y);
-        }*/
-       
-
     }
 
 
