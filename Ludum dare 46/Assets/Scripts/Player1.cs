@@ -41,8 +41,6 @@ public class Player1 : MonoBehaviour
             }
         }
 
-        Debug.Log(rb2d.velocity);
-
         if(rb2d.velocity.x < 0)
         {
             transform.localScale = new Vector3(-3.75f, 3.75f, 3.75f);
