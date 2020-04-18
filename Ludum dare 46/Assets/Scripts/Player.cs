@@ -7,10 +7,12 @@ public class Player : MonoBehaviour
 
     [SerializeField] private LayerMask groundLayermask;
     [Header("Movement, 100 = 1 unit/second")]
-    public float maxSpeed;
+    public float initDashSpeed;
+    public float walkSpeed;
+    public float runSpeed;
 
     public float accelerationRate;
-    public float decellerationRate;
+    public float decelerationRate;
 
     public float jumpPower;
 
@@ -29,123 +31,262 @@ public class Player : MonoBehaviour
     private bool grounded;
 
     private BoxCollider2D collider;
+    private Animator anim;
 
-    private enum PlayerAnimations {idle,walking,running,jump,land};
-    PlayerAnimations playerAnim = PlayerAnimations.idle;
+    private float previousRunningInput = 0;
+
+    private enum PlayerState {idle,walking,initDash,running,jump,land,falling,dying};
+
+    PlayerState state = PlayerState.idle;
 
 
     // Start is called before the first frame update
     void Start()
     {
-        maxSpeed = maxSpeed / 100.0f;
+        initDashSpeed = initDashSpeed / 100.0f;
+        runSpeed = runSpeed / 100.0f;
         accelerationRate = accelerationRate / 100.0f;
-        decellerationRate = decellerationRate / 100.0f;
+        decelerationRate = decelerationRate / 100.0f;
         jumpPower = jumpPower / 100.0f;
         gravity = gravity / 100.0f;
         friction = friction / 100.0f;
         turnAroundSpeed = turnAroundSpeed / 100.0f;
-        
 
+        anim = GetComponent<Animator>();
         collider = GetComponent<BoxCollider2D>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        //movement controller
-        if (Input.GetJoystickNames().Length > 0)
+        //Debug.Log("player state : " + state.ToString());
+        /*
+         //movement controller
+         if (Input.GetJoystickNames().Length > 0)
+         {
+             //hard coded deadzone
+             if (Mathf.Abs(Input.GetAxis("C_Horizontal")) > 0.35f)
+             {
+                 if (Input.GetAxis("C_Horizontal") > 0)
+                 {
+                     if(velocityX <= runSpeed)
+                     {
+                         Run(true);
+                     }
+                 }
+                 else if (Input.GetAxis("C_Horizontal") < 0)
+                 {
+                     if (velocityX >= -runSpeed)
+                     {
+                         Run(false);
+                     }
+                 }
+
+             }
+         }*/
+
+
+        //if input while idle 
+        //initDash
+        //if init dash animation reached end
+        //check if still input 
+        // run or walk 
+
+        //if no input back to idle
+
+        //movement key
+
+        if(state == PlayerState.idle)
         {
-            if (Mathf.Abs(Input.GetAxis("C_Horizontal")) > 0.2f)
+
+            if (Input.GetAxis("Horizontal") > 0)
             {
-                if (Input.GetAxis("C_Horizontal") > 0)
-                {
-                    if(velocityX <= maxSpeed)
-                    {
-                        velocityX = Mathf.MoveTowards(velocityX, maxSpeed, accelerationRate* Time.deltaTime);
-                    }
-                }
-                else if (Input.GetAxis("C_Horizontal") < 0)
-                {
-                    if (velocityX >= -maxSpeed)
-                    {
-                        velocityX = Mathf.MoveTowards(velocityX,-maxSpeed, accelerationRate * Time.deltaTime);
-                    }
-                }
-                
+                state = PlayerState.initDash;
+                anim.SetBool("InitDash", true);
+                anim.SetBool("Idle", false);
+                //set anim state to init dash
+            }
+            else if (Input.GetAxis("Horizontal") < 0)
+            {
+                state = PlayerState.initDash;
+                anim.SetBool("InitDash", true);
+                anim.SetBool("Idle", false);
+            }
+            else
+            {
+                deceleration();
             }
         }
 
-        //movement key
-        Debug.Log(Input.GetAxis("Horizontal"));
+        if(state == PlayerState.initDash)
+        {
             if (Input.GetAxis("Horizontal") > 0)
             {
-                if (velocityX <= maxSpeed)
+                InitDash(true);
+            }
+            else if (Input.GetAxis("Horizontal") < 0)
+            {
+                InitDash(false);
+            }
+            else
+            {
+                state = PlayerState.idle;
+                anim.SetBool("Idle", true);
+                anim.SetBool("InitDash", false);
+            }
+        }
+        if (state == PlayerState.running)
+        {
+            if (Input.GetAxis("Horizontal") > 0)
+            {
+                if (previousRunningInput >= 0)
                 {
-                    velocityX = Mathf.MoveTowards(velocityX, maxSpeed, accelerationRate * Time.deltaTime);
+                    Run(true);
+                }
+                else
+                {
+                    state = PlayerState.initDash;
+                    anim.SetBool("InitDash", true);
+                    anim.SetBool("Running", false);
                 }
             }
             else if (Input.GetAxis("Horizontal") < 0)
             {
-                if (velocityX >= -maxSpeed)
+                if (previousRunningInput <= 0)
                 {
-                    velocityX = Mathf.MoveTowards(velocityX, -maxSpeed, accelerationRate * Time.deltaTime);
+                    Run(false);
+                }
+                else
+                {
+                    state = PlayerState.initDash;
+                    anim.SetBool("InitDash", true);
+                    anim.SetBool("Running", false);
                 }
             }
-
-        if (Mathf.Abs(velocityX) > 0)
-        {
-            if (Input.GetAxis("C_Horizontal") == 0 && Input.GetAxis("Horizontal") == 0)
+            else
             {
-                velocityX = Mathf.MoveTowards(velocityX, 0, decellerationRate * Time.deltaTime);
+                state = PlayerState.idle;
+                anim.SetBool("Idle", true);
+                anim.SetBool("Running", false);
             }
+            previousRunningInput = Input.GetAxis("Horizontal");
         }
-        /*else
+
+
+
+        /*if (Mathf.Abs(velocityX) > 0)
         {
-            velocityX = 0;
+            
+            if (/*Input.GetAxis("C_Horizontal") == 0 && nput.GetAxis("Horizontal") == 0)
+            {
+                deceleration();
+            }
         }*/
 
-
-        /*if (!grounded)
-        {
-            velocityY -= gravity * Time.deltaTime;
-        }
-        else
-        {
-            if (Input.GetJoystickNames().Length > 0)
-            {
-                if (Input.GetButtonDown("C_Jump") && grounded)
-                {
-                    
-                }
-            }
-            if (Input.GetButtonDown("Jump") && grounded)
-            {
-                velocityY = jumpPower;
-                grounded = false;
-            }
-        }*/
+        //GRAVITY
         if (!grounded)
         {
-            velocityY -= gravity * Time.deltaTime;
+            Gravity();
         }
         else
         {
-            if (Input.GetButtonDown("Jump") && grounded)
+            if (Input.GetButtonDown("Jump") || Input.GetButtonDown("C_Jump") && grounded)
             {
-                velocityY = jumpPower;
-                grounded = false;
+                anim.SetTrigger("Jump");
+                //Jump();
             }
         }
 
-        Debug.Log("final velocity x" + finalVelocityX + " final velocity y" + finalVelocityY);
-        Debug.Log("horizontal collision? : " + yAxisCollision());
-        Debug.Log("Vertical collision? : " + xAxisCollision());
+       // Debug.Log("velocity x " + velocityX);
+        yAxisCollision();
+        xAxisCollision();
 
         Move(finalVelocityX, finalVelocityY);
 
-
     }
 
+    void InitDash(bool right)
+    {
+
+        if (right)
+        {
+            velocityX = Mathf.MoveTowards(velocityX, initDashSpeed, accelerationRate * Time.deltaTime);
+        }
+        else
+        {
+            velocityX = Mathf.MoveTowards(velocityX, -initDashSpeed, accelerationRate * Time.deltaTime);
+        }
+    }
+
+    public void EndInitDash()
+    {
+        if (Mathf.Abs( Input.GetAxis("Horizontal")) > 0)
+        {
+            Debug.Log("<Color=red END DASH </Color>");
+            state = PlayerState.running;
+            //set animator event 
+            anim.SetBool("Running", true);
+            anim.SetBool("InitDash", false);
+            anim.SetBool("Idle", false);
+        }
+        else
+        {
+            state = PlayerState.idle;
+            anim.SetBool("Idle", true);
+            anim.SetBool("InitDash", false);
+            anim.SetBool("Running", false);
+        }
+    }
+
+    /*void Walk(bool right)
+    {
+        if (right)
+        {
+            velocityX = Mathf.MoveTowards(velocityX, walkSpeed, accelerationRate * Time.deltaTime);
+        }
+        else
+        {
+            velocityX = Mathf.MoveTowards(velocityX, -walkSpeed, accelerationRate * Time.deltaTime);
+        }
+    }*/
+
+    void Run(bool right)
+    {
+        if (right)
+        {
+            if (velocityX <= runSpeed)
+            {
+                 velocityX = Mathf.MoveTowards(velocityX, runSpeed, accelerationRate * Time.deltaTime);
+            }
+
+        }
+        else
+        {
+            if (velocityX >= -runSpeed)
+            {
+                velocityX = Mathf.MoveTowards(velocityX, -runSpeed, accelerationRate * Time.deltaTime);
+            }
+        }
+    }
+
+    void Gravity()
+    {
+        velocityY -= gravity * Time.deltaTime;
+    }
+    void deceleration()
+    {
+        velocityX = Mathf.MoveTowards(velocityX, 0, decelerationRate * Time.deltaTime);
+    }
+
+    public void Jump()
+    {
+        velocityY = jumpPower;
+        grounded = false;
+        state = PlayerState.jump;
+        anim.SetBool("Running", false);
+        anim.SetBool("Idle", false);
+        anim.SetBool("InitDash", false);
+    }
     bool yAxisCollision()
     {
         float collisionOffset = 0.01f;
@@ -340,7 +481,6 @@ public class Player : MonoBehaviour
 
     void Move(float x, float y)
     {
-        Debug.Log(x + " y : " + y);
         transform.position = transform.position +  new Vector3(x, y,0);
     }
 
@@ -348,8 +488,31 @@ public class Player : MonoBehaviour
     {
         if (isGrounded)
         {
-            grounded = true;
-            velocityY = 0;
+            if(grounded == false)
+            {
+                grounded = true;
+                velocityY = 0;
+                if(state == PlayerState.jump)
+                {
+                    anim.SetTrigger("Land");
+                    if (Mathf.Abs(Input.GetAxis("Horizontal")) > 0)
+                    {
+                        state = PlayerState.running;
+                        anim.SetBool("Running", true);
+                        anim.SetBool("InitDash", false);
+                        anim.SetBool("Idle", false);
+                    }
+                    else
+                    {
+                        state = PlayerState.idle;
+                        anim.SetBool("InitDash", false);
+                        anim.SetBool("Running", false);
+                        anim.SetBool("Idle", true);
+                    }
+                    
+                }
+            }
+
         }
         if (!isGrounded)
         {
@@ -357,4 +520,6 @@ public class Player : MonoBehaviour
         }
 
     }
+
+
 }
