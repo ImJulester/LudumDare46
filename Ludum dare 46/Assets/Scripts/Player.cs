@@ -52,7 +52,17 @@ public class Player : MonoBehaviour
         collider = GetComponent<BoxCollider2D>();
     }
 
-    // Update is called once per frame
+    private void Update()
+    {
+        if (grounded)
+        {
+            if (Input.GetButtonDown("Jump") || Input.GetButtonDown("C_Jump") && grounded)
+            {
+                anim.SetTrigger("Jump");
+                //Jump();
+            }
+        }
+    }
     void FixedUpdate()
     {
         //Debug.Log("player state : " + state.ToString());
@@ -196,14 +206,7 @@ public class Player : MonoBehaviour
         {
             Gravity();
         }
-        else
-        {
-            if (Input.GetButtonDown("Jump") || Input.GetButtonDown("C_Jump") && grounded)
-            {
-                anim.SetTrigger("Jump");
-                //Jump();
-            }
-        }
+        
 
        // Debug.Log("velocity x " + velocityX);
         yAxisCollision();
