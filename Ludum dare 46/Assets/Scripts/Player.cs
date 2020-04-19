@@ -8,7 +8,6 @@ public class Player : MonoBehaviour
     [SerializeField] private LayerMask groundLayermask;
     [Header("Movement, 100 = 1 unit/second")]
     public float initDashSpeed;
-    public float walkSpeed;
     public float runSpeed;
 
     public float accelerationRate;
@@ -18,9 +17,6 @@ public class Player : MonoBehaviour
 
     public float gravity;
 
-    public float friction;
-
-    public float turnAroundSpeed;
 
     private float velocityX;
     private float velocityY;
@@ -49,8 +45,6 @@ public class Player : MonoBehaviour
         decelerationRate = decelerationRate / 100.0f;
         jumpPower = jumpPower / 100.0f;
         gravity = gravity / 100.0f;
-        friction = friction / 100.0f;
-        turnAroundSpeed = turnAroundSpeed / 100.0f;
 
         anim = GetComponent<Animator>();
         collider = GetComponent<BoxCollider2D>();
@@ -211,10 +205,12 @@ public class Player : MonoBehaviour
         if (right)
         {
             velocityX = Mathf.MoveTowards(velocityX, initDashSpeed, accelerationRate * Time.deltaTime);
+            transform.localScale = new Vector3(1, 1, 1);
         }
         else
         {
             velocityX = Mathf.MoveTowards(velocityX, -initDashSpeed, accelerationRate * Time.deltaTime);
+            transform.localScale = new Vector3(-1, 1, 1);
         }
     }
 
@@ -222,7 +218,7 @@ public class Player : MonoBehaviour
     {
         if (Mathf.Abs( Input.GetAxis("Horizontal")) > 0)
         {
-            Debug.Log("<Color=red END DASH </Color>");
+
             state = PlayerState.running;
             //set animator event 
             anim.SetBool("Running", true);
@@ -238,17 +234,6 @@ public class Player : MonoBehaviour
         }
     }
 
-    /*void Walk(bool right)
-    {
-        if (right)
-        {
-            velocityX = Mathf.MoveTowards(velocityX, walkSpeed, accelerationRate * Time.deltaTime);
-        }
-        else
-        {
-            velocityX = Mathf.MoveTowards(velocityX, -walkSpeed, accelerationRate * Time.deltaTime);
-        }
-    }*/
 
     void Run(bool right)
     {
@@ -257,6 +242,7 @@ public class Player : MonoBehaviour
             if (velocityX <= runSpeed)
             {
                  velocityX = Mathf.MoveTowards(velocityX, runSpeed, accelerationRate * Time.deltaTime);
+                transform.localScale = new Vector3(1, 1, 1);
             }
 
         }
@@ -265,6 +251,7 @@ public class Player : MonoBehaviour
             if (velocityX >= -runSpeed)
             {
                 velocityX = Mathf.MoveTowards(velocityX, -runSpeed, accelerationRate * Time.deltaTime);
+                transform.localScale = new Vector3(-1, 1, 1);
             }
         }
     }
@@ -481,7 +468,9 @@ public class Player : MonoBehaviour
 
     void Move(float x, float y)
     {
-        transform.position = transform.position +  new Vector3(x, y,0);
+        float endX = x * Time.deltaTime;
+        float endY = y;
+        transform.position = transform.position +  new Vector3(endX, endY,0);
     }
 
     void Grounded(bool isGrounded)

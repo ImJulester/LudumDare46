@@ -156,15 +156,12 @@ MonoBehaviour:
   groundLayermask:
     serializedVersion: 2
     m_Bits: 256
-  initDashSpeed: 3
-  walkSpeed: 2
-  runSpeed: 5
-  accelerationRate: 60
-  decelerationRate: 100
+  initDashSpeed: 600
+  runSpeed: 800
+  accelerationRate: 2000
+  decelerationRate: 2000
   jumpPower: 10
   gravity: 30
-  friction: 100
-  turnAroundSpeed: 100
 --- !u!212 &162560815
 SpriteRenderer:
   m_ObjectHideFlags: 0
