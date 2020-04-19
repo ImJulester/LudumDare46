@@ -39,6 +39,8 @@ public class Player : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+
+
         initDashSpeed = initDashSpeed / 100.0f;
         runSpeed = runSpeed / 100.0f;
         accelerationRate = accelerationRate / 100.0f;
@@ -51,7 +53,7 @@ public class Player : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         //Debug.Log("player state : " + state.ToString());
         /*
