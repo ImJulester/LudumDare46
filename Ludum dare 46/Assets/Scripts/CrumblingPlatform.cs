@@ -24,5 +24,6 @@ public class CrumblingPlatform : MonoBehaviour
     private void OnCollisionEnter2D(Collision2D collision)
     {
         GetComponent<Animator>().SetTrigger("Crumble");
+        GetComponent<AudioSource>().Play();
     }
 }
