@@ -92,7 +92,7 @@ public class Player : MonoBehaviour
 
         if(state == PlayerState.idle)
         {
-
+            previousRunningInput = 0;
             if (Input.GetAxis("Horizontal") > 0)
             {
                 state = PlayerState.initDash;
@@ -116,10 +116,12 @@ public class Player : MonoBehaviour
         {
             if (Input.GetAxis("Horizontal") > 0)
             {
+                previousRunningInput = Input.GetAxis("Horizontal");
                 InitDash(true);
             }
             else if (Input.GetAxis("Horizontal") < 0)
             {
+
                 InitDash(false);
             }
             else
@@ -135,11 +137,16 @@ public class Player : MonoBehaviour
             {
                 if (previousRunningInput >= 0)
                 {
+                    previousRunningInput = Input.GetAxis("Horizontal");
                     Run(true);
                 }
                 else
                 {
+                    Debug.Log("<color=red>dashback </color>");
+                    //Debug.Break();
                     state = PlayerState.initDash;
+                    previousRunningInput = Input.GetAxis("Horizontal");
+                    InitDash(false);
                     anim.SetBool("InitDash", true);
                     anim.SetBool("Running", false);
                 }
@@ -148,11 +155,16 @@ public class Player : MonoBehaviour
             {
                 if (previousRunningInput <= 0)
                 {
+                    previousRunningInput = Input.GetAxis("Horizontal");
                     Run(false);
                 }
                 else
                 {
+                    Debug.Log("<color=red>dashback </color>");
+                    //Debug.Break();
+                    previousRunningInput = Input.GetAxis("Horizontal");
                     state = PlayerState.initDash;
+                    InitDash(true);
                     anim.SetBool("InitDash", true);
                     anim.SetBool("Running", false);
                 }
@@ -163,7 +175,7 @@ public class Player : MonoBehaviour
                 anim.SetBool("Idle", true);
                 anim.SetBool("Running", false);
             }
-            previousRunningInput = Input.GetAxis("Horizontal");
+            
         }
 
 
@@ -218,7 +230,7 @@ public class Player : MonoBehaviour
     {
         if (Mathf.Abs( Input.GetAxis("Horizontal")) > 0)
         {
-
+            Debug.Log("endinit set running");
             state = PlayerState.running;
             //set animator event 
             anim.SetBool("Running", true);
@@ -227,6 +239,7 @@ public class Player : MonoBehaviour
         }
         else
         {
+            Debug.Log("endinit set idle");
             state = PlayerState.idle;
             anim.SetBool("Idle", true);
             anim.SetBool("InitDash", false);
@@ -468,7 +481,7 @@ public class Player : MonoBehaviour
 
     void Move(float x, float y)
     {
-        float endX = x * Time.deltaTime;
+        float endX = x;
         float endY = y;
         transform.position = transform.position +  new Vector3(endX, endY,0);
     }
