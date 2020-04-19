@@ -7,6 +7,7 @@ public class MovingPlatform : MonoBehaviour
     public bool movingDown;
     public float speed = 5;
 
+    public GameObject platform;
     public GameObject upBorder;
     public GameObject downBorder;
 
@@ -21,16 +22,16 @@ public class MovingPlatform : MonoBehaviour
     {
         if (movingDown)
         {
-            transform.position = Vector3.MoveTowards(transform.position, downBorder.transform.position, speed * Time.deltaTime);
-            if(transform.position.x == downBorder.transform.position.x && transform.position.y == downBorder.transform.position.y)
+            platform.transform.position = Vector3.MoveTowards(platform.transform.position, downBorder.transform.position, speed * Time.deltaTime);
+            if(platform.transform.position.x == downBorder.transform.position.x && platform.transform.position.y == downBorder.transform.position.y)
             {
                 movingDown = false;
             }
         }
         else
         {
-            transform.position =  Vector3.MoveTowards(transform.position, upBorder.transform.position, speed * Time.deltaTime);
-            if (transform.position.x == upBorder.transform.position.x && transform.position.y == upBorder.transform.position.y)
+            platform.transform.position =  Vector3.MoveTowards(platform.transform.position, upBorder.transform.position, speed * Time.deltaTime);
+            if (platform.transform.position.x == upBorder.transform.position.x && platform.transform.position.y == upBorder.transform.position.y)
             {
                 movingDown = true;
             }

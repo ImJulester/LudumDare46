@@ -43,11 +43,11 @@ public class Player1 : MonoBehaviour
 
         if(rb2d.velocity.x < 0)
         {
-            transform.localScale = new Vector3(-3.75f, 3.75f, 3.75f);
+            transform.localScale = new Vector3(-1f, 1f, 3.75f);
         }
         else
         {
-            transform.localScale = new Vector3(3.75f, 3.75f, 3.75f);
+            transform.localScale = new Vector3(1f, 1f, 3.75f);
         }
 
         if (Input.GetAxis("Horizontal") != 0)
