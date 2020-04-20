@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Experimental.Rendering.Universal;
+using UnityEngine.SceneManagement;
 public class Player : MonoBehaviour
 {
 
@@ -379,8 +380,13 @@ public class Player : MonoBehaviour
             sprites[i].color = spriteRenderer.color;
             rb2ds[i].AddForce(new Vector2(Random.Range(-1.0f, 1.0f), Random.Range(-1.0f, 1.0f)) * 200);
         }
+        StartCoroutine(deathWait());
+    }
 
-        Destroy(gameObject);
+    IEnumerator deathWait()
+    {
+        yield return new WaitForSeconds(1);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
     void InitDash(bool right)
     {
