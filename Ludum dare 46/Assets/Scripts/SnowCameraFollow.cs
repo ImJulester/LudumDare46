@@ -5,16 +5,19 @@ using UnityEngine;
 public class SnowCameraFollow : MonoBehaviour
 {
     // Start is called before the first frame update
-    private Transform camera;
+    public Transform camera;
     void Start()
     {
-        camera = Camera.main.transform;
     }
 
     // Update is called once per frame
     void Update()
     {
-        transform.position = new Vector3(camera.position.x, transform.position.y, transform.position.z);
+        if(camera != null)
+        {
+            transform.position = new Vector3(camera.position.x, transform.position.y, transform.position.z);
+        }
+
         
     }
 }

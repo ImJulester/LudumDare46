@@ -373,9 +373,10 @@ public class Player : MonoBehaviour
 
         for(int i =0; i < size; i++)
         {
-            sprites[i].color = flameFill.color;
+            sprites[i].color = spriteRenderer.color;
             rb2ds[i].AddForce(new Vector2(Random.Range(-1.0f, 1.0f), Random.Range(-1.0f, 1.0f)) * 200);
         }
+
         Destroy(gameObject);
     }
     void InitDash(bool right)
