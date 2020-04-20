@@ -42,7 +42,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Floats:
     - Boolean_66C5762A: 1
-    - Vector1_1C041F9B: 0.2
+    - Vector1_1C041F9B: 0.15
     - _EnableExternalAlpha: 0
     - _WaveSize: 0.2
     m_Colors:

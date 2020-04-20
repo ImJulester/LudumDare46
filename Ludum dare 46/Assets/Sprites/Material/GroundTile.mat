@@ -49,7 +49,7 @@ Material:
     - Vector2_4DFDE443: {r: 20, g: 20, b: 0, a: 0}
     - Vector2_8F9DE258: {r: -65, g: -20, b: 0, a: 0}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _EmissionColor: {r: 0.21798873, g: 0, b: 0.6603774, a: 0.8862745}
+    - _EmissionColor: {r: 0.14488713, g: 0, b: 0.43466142, a: 0.8862745}
     - _EmissionColorHighlight: {r: 0, g: 2.509804, b: 2.9960785, a: 1}
     - _Flip: {r: 1, g: 1, b: 1, a: 1}
     - _RendererColor: {r: 1, g: 1, b: 1, a: 1}
