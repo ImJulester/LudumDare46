@@ -36,6 +36,6 @@ Material:
     m_Colors:
     - Color_EBB01644: {r: 5.278032, g: 3.9533494, b: 0.6623413, a: 0.8862745}
     - SinEmissionMovement: {r: 1, g: 0, b: 0, a: 0}
-    - _EmissionColor: {r: 0.2615354, g: 0.24964744, b: 0.10253377, a: 0.8862745}
-    - _EmissionColor2: {r: 0.85882354, g: 0.16078432, b: 0.011764706, a: 1}
+    - _EmissionColor: {r: 0.754717, g: 0.6620548, b: 0.252759, a: 0.21176471}
+    - _EmissionColor2: {r: 0.99215686, g: 0.22745098, b: 0.0627451, a: 1}
     - _EmissionUV: {r: 0, g: 0, b: 0, a: 0}

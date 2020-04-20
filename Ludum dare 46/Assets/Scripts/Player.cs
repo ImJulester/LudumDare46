@@ -28,10 +28,23 @@ public class Player : MonoBehaviour
 
     private BoxCollider2D collider;
     private Animator anim;
+    public SpriteRenderer spriteRenderer;
 
     private float previousRunningInput = 0;
+    [Space(10)]
+    [Header("flame values")]
+    public Color fullFlameColor;
+    public Color emptyFlameColor;
 
-    private enum PlayerState {idle,walking,initDash,running,jump,land,falling,dying};
+    public float maxFlame;
+    public float startFlame;
+    public float flameDecayRate;
+    public float rainFlameDecayRate;
+    private float flameValue;
+
+
+
+    private enum PlayerState { idle, walking, initDash, running, jump, land, falling, dying };
 
     PlayerState state = PlayerState.idle;
 
@@ -47,13 +60,21 @@ public class Player : MonoBehaviour
         decelerationRate = decelerationRate / 100.0f;
         jumpPower = jumpPower / 100.0f;
         gravity = gravity / 100.0f;
-
+        flameValue = startFlame;
         anim = GetComponent<Animator>();
         collider = GetComponent<BoxCollider2D>();
+        //spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
     private void Update()
     {
+        ManageFlame();
+        if(state == PlayerState.dying)
+        {
+            //Play animation and destroy player?
+            Debug.Log("DEAD");
+        }
+
         if (grounded)
         {
             if (Input.GetButtonDown("Jump") || Input.GetButtonDown("C_Jump") && grounded)
@@ -65,6 +86,10 @@ public class Player : MonoBehaviour
     }
     void FixedUpdate()
     {
+        if(state == PlayerState.dying)
+        {
+            return;
+        }
         //Debug.Log("player state : " + state.ToString());
         /*
          //movement controller
@@ -102,7 +127,7 @@ public class Player : MonoBehaviour
 
         //movement key
 
-        if(state == PlayerState.idle)
+        if (state == PlayerState.idle)
         {
             previousRunningInput = 0;
             if (Input.GetAxis("Horizontal") > 0)
@@ -124,7 +149,7 @@ public class Player : MonoBehaviour
             }
         }
 
-        if(state == PlayerState.initDash)
+        if (state == PlayerState.initDash)
         {
             if (Input.GetAxis("Horizontal") > 0)
             {
@@ -187,7 +212,7 @@ public class Player : MonoBehaviour
                 anim.SetBool("Idle", true);
                 anim.SetBool("Running", false);
             }
-            
+
         }
 
 
@@ -206,9 +231,9 @@ public class Player : MonoBehaviour
         {
             Gravity();
         }
-        
 
-       // Debug.Log("velocity x " + velocityX);
+
+        // Debug.Log("velocity x " + velocityX);
         yAxisCollision();
         xAxisCollision();
 
@@ -216,6 +241,29 @@ public class Player : MonoBehaviour
 
     }
 
+    void PickupFlame()
+    {
+        flameValue += maxFlame / 5;
+        if(flameValue > maxFlame)
+        {
+            flameValue = maxFlame;
+        }
+    }
+    void ManageFlame()
+    {
+        flameValue -= flameDecayRate * Time.deltaTime;
+        Debug.Log("flamevalue : " + flameValue);
+        spriteRenderer.color = Color.Lerp(emptyFlameColor, fullFlameColor, flameValue / maxFlame);
+
+        if(flameValue <= 0)
+        {
+            state = PlayerState.dying;
+            //DEATH
+        }
+
+
+
+    }
     void InitDash(bool right)
     {
 
