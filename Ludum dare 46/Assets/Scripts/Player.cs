@@ -547,7 +547,7 @@ public class Player : MonoBehaviour
                 }
             }
 
-            if (!grounded)
+           /* if (!grounded)
             {
                 RaycastHit2D hitInfo2DextraBot;
                 float extraCheckOffset = 0.2f;
@@ -566,7 +566,7 @@ public class Player : MonoBehaviour
                         collidedDistance = hitInfo2DextraBot.distance;
                     }
                 }
-            }
+            }*/
 
             if (collided)
             {
@@ -621,7 +621,7 @@ public class Player : MonoBehaviour
                 }
             }
 
-            if (!grounded)
+           /* if (!grounded)
             {
                 RaycastHit2D hitInfo2DextraBot;
                 float extraCheckOffset = 0.2f;
@@ -641,7 +641,7 @@ public class Player : MonoBehaviour
                         collidedDistance = hitInfo2DextraBot.distance;
                     }
                 }
-            }
+            }*/
 
             if (collided)
             {
