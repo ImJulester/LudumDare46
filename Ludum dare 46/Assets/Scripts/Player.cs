@@ -48,6 +48,7 @@ public class Player : MonoBehaviour
     private float flameValue;
 
     public Slider flameSlider;
+    public Text flameValueText;
     public Image flameFill;
     public Color flameFillFull;
     public Color flameFillEmpty;
@@ -351,6 +352,8 @@ public class Player : MonoBehaviour
         fireLight.intensity = Mathf.Lerp(0, 1.5f, flameValue/ maxFlame);
 
         fireParticle.startLifetime = Mathf.Lerp(minParticleLifetime,fullParticleLifetime , flameValue / maxFlame);
+
+        flameValueText.text = (int)flameValue + "";
 
         if (flameValue <= 0)
         {
