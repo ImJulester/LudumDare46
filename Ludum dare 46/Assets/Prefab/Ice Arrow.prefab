@@ -4767,6 +4767,7 @@ GameObject:
   - component: {fileID: 2938104666747038135}
   - component: {fileID: 2938104666747038134}
   - component: {fileID: 2938104666747038129}
+  - component: {fileID: 2620758118968778941}
   m_Layer: 0
   m_Name: Ice Arrow
   m_TagString: Untagged
@@ -4889,3 +4890,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 10
+--- !u!114 &2620758118968778941
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2938104666747038130}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f81d3baea53aae743a2cd7352f778b0f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fireAmount: -30
