@@ -25,10 +25,13 @@ public class FollowCamera : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(player != null)
+        {
+            SetTargetPos();
 
-        SetTargetPos();
+            MoveToPlayer();
+        }
 
-        MoveToPlayer();
     }
 
 

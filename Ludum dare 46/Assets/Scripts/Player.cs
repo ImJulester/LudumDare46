@@ -58,6 +58,7 @@ public class Player : MonoBehaviour
     public float minParticleLifetime;
     public float fullParticleLifetime;
 
+    public GameObject deathPrefab;
     private enum PlayerState { idle, walking, initDash, running, jump, land, falling, dying, crouch };
 
     PlayerState state = PlayerState.idle;
@@ -363,7 +364,19 @@ public class Player : MonoBehaviour
 
     void Death()
     {
+        spriteRenderer.enabled = false;
         state = PlayerState.dying;
+        GameObject g = Instantiate(deathPrefab, transform.position, transform.rotation) as GameObject;
+        SpriteRenderer[] sprites = g.GetComponentsInChildren<SpriteRenderer>();
+        Rigidbody2D[] rb2ds = g.GetComponentsInChildren<Rigidbody2D>();
+        int size = sprites.Length;
+
+        for(int i =0; i < size; i++)
+        {
+            sprites[i].color = flameFill.color;
+            rb2ds[i].AddForce(new Vector2(Random.Range(-1.0f, 1.0f), Random.Range(-1.0f, 1.0f)) * 200);
+        }
+        Destroy(gameObject);
     }
     void InitDash(bool right)
     {
