@@ -7,7 +7,8 @@ public class MainMenu : MonoBehaviour
     bool startGame;
     public Camera gameCamera;
     public Player player;
-    public GameObject uiCanvas;
+    public GameObject mainMenuCanvas;
+    public GameObject settings;
 
     public float startGameSmoothRate = 1f;
 
@@ -28,14 +29,14 @@ public class MainMenu : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
         if (startGame)
         {
             startGameValue += Time.deltaTime * startGameSmoothRate;
             thisCamera.orthographicSize = Mathf.Lerp(MenuCameraSize, gameCamera.orthographicSize, startGameValue);
             transform.position = Vector3.Lerp(startPos, gameCamera.transform.position, startGameValue);
 
-            if(startGameValue >= 1)
+            if (startGameValue >= 1)
             {
                 gameCamera.enabled = true;
                 player.enabled = true;
@@ -49,6 +50,13 @@ public class MainMenu : MonoBehaviour
     public void StartGame()
     {
         startGame = true;
-        Destroy(uiCanvas);
+        Destroy(mainMenuCanvas);
     }
+
+    public void Settings()
+    {
+        settings.SetActive(true);
+        mainMenuCanvas.SetActive(false);
+    }
+
 }
