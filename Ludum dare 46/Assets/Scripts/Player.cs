@@ -852,7 +852,7 @@ public class Player : MonoBehaviour
         if (!isGrounded)
         {
             grounded = false;
-            state = PlayerState.jump;
+            //state = PlayerState.jump;
         }
 
     }
