@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: BuildingWorldGlowWave
+  m_Name: background building layer
   m_Shader: {fileID: -6465566751694194690, guid: fa654ed7a5a7d964185b9182389eee33,
     type: 3}
   m_ShaderKeywords: ETC1_EXTERNAL_ALPHA
@@ -25,11 +25,11 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Emission:
-        m_Texture: {fileID: 2800000, guid: 153bc13d6577ef1418394e86a64bf9fc, type: 3}
+        m_Texture: {fileID: 2800000, guid: 163046ba3371e524dbb44779bb27d291, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: ae7d4e1506fab0245bcbcc0bd3576951, type: 3}
+        m_Texture: {fileID: 2800000, guid: 4f1c4f0baa84f5d4f880b79a2594f014, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MaskTex:
@@ -40,25 +40,16 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _Texture2DAsset_803F6A92_Out_0:
-        m_Texture: {fileID: 2800000, guid: 15ee24b7c911af44f8095bc6cd234e9d, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _Texture2DAsset_E79F3761_Out_0:
-        m_Texture: {fileID: 2800000, guid: ae7d4e1506fab0245bcbcc0bd3576951, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
     m_Floats:
     - Boolean_66C5762A: 1
-    - Boolean_925B9A95: 1
-    - Vector1_1C041F9B: 0.05
+    - Vector1_1C041F9B: 0.2
     - _EnableExternalAlpha: 0
-    - _WaveSize: 0.3
+    - _WaveSize: 0.2
     m_Colors:
-    - Vector2_4DFDE443: {r: 100, g: 100, b: 0, a: 0}
-    - Vector2_8F9DE258: {r: -65, g: -100, b: 0, a: 0}
+    - Vector2_4DFDE443: {r: 20, g: 20, b: 0, a: 0}
+    - Vector2_8F9DE258: {r: -65, g: -20, b: 0, a: 0}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _EmissionColor: {r: 0.072924666, g: 0.052954778, b: 0.3207547, a: 1}
-    - _EmissionColorHighlight: {r: 0, g: 1.720795, b: 1.64872, a: 1}
+    - _EmissionColor: {r: 0.09580715, g: 0.08343716, b: 0.7075472, a: 1}
+    - _EmissionColorHighlight: {r: 0, g: 1.254902, b: 1.4980392, a: 0.8862745}
     - _Flip: {r: 1, g: 1, b: 1, a: 1}
     - _RendererColor: {r: 1, g: 1, b: 1, a: 1}

@@ -483,7 +483,7 @@ public class Player : MonoBehaviour
             bool collided = false;
 
 #if UNITY_EDITOR
-            Debug.DrawRay(new Vector2(transform.position.x + collider.bounds.extents.x, collider.bounds.center.y + (collider.bounds.extents.y - collisionOffset)), Vector2.right, Color.red);
+            Debug.DrawRay(new Vector2(transform.position.x + (collider.bounds.extents.x), collider.bounds.center.y + (collider.bounds.extents.y - collisionOffset)), Vector2.right, Color.red);
             Debug.DrawRay(new Vector2(transform.position.x + collider.bounds.extents.x, collider.bounds.center.y), Vector2.right, Color.red);
             Debug.DrawRay(new Vector2(transform.position.x + collider.bounds.extents.x, collider.bounds.center.y - (collider.bounds.extents.y - collisionOffset)), Vector2.right, Color.red);
 
@@ -543,6 +543,7 @@ public class Player : MonoBehaviour
 
             if (collided)
             {
+                velocityX = collidedDistance;
                 finalVelocityX = collidedDistance;
                 return true;
             }
@@ -617,6 +618,7 @@ public class Player : MonoBehaviour
 
             if (collided)
             {
+                velocityX = -collidedDistance;
                 finalVelocityX = -collidedDistance;
                 return true;
             }
@@ -675,6 +677,7 @@ public class Player : MonoBehaviour
 
             if (collided)
             {
+                velocityY = collidedDistance;
                 finalVelocityY = collidedDistance;
                 return true;
             }
@@ -726,6 +729,7 @@ public class Player : MonoBehaviour
 
             if (collided)
             {
+                velocityY = -collidedDistance;
                 finalVelocityY = -collidedDistance;
                 Grounded(true);
                 return true;
