@@ -905,7 +905,7 @@ public class Player : MonoBehaviour
                 dir *= spikeKnockbackPower;
                 velocityX = dir.x;
                 velocityY = dir.y;
-                
+                PickupFlame(collision.GetComponent<Collectible>().fireAmount);
                 audioSource.PlayOneShot(hitSnow);
             }
             else
