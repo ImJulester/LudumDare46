@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Player : MonoBehaviour
 {
@@ -42,7 +43,12 @@ public class Player : MonoBehaviour
     public float rainFlameDecayRate;
     private float flameValue;
 
+    public Slider flameSlider;
+    public Image flameFill;
+    public Color flameFillFull;
+    public Color flameFillEmpty;
 
+    public GameObject ParticleHitGround;
 
     private enum PlayerState { idle, walking, initDash, running, jump, land, falling, dying };
 
@@ -52,7 +58,8 @@ public class Player : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
+        flameSlider.maxValue = maxFlame;
+        flameSlider.value = startFlame;
 
         initDashSpeed = initDashSpeed / 100.0f;
         runSpeed = runSpeed / 100.0f;
@@ -255,7 +262,10 @@ public class Player : MonoBehaviour
         Debug.Log("flamevalue : " + flameValue);
         spriteRenderer.color = Color.Lerp(emptyFlameColor, fullFlameColor, flameValue / maxFlame);
 
-        if(flameValue <= 0)
+        flameSlider.value = flameValue;
+        flameFill.color = Color.Lerp(flameFillEmpty, flameFillFull, flameValue / maxFlame);
+
+        if (flameValue <= 0)
         {
             state = PlayerState.dying;
             //DEATH
@@ -329,6 +339,11 @@ public class Player : MonoBehaviour
     void deceleration()
     {
         velocityX = Mathf.MoveTowards(velocityX, 0, decelerationRate * Time.deltaTime);
+    }
+
+    public void SpawnLandingParticle()
+    {
+        GameObject.Instantiate(ParticleHitGround.gameObject, transform.position + new Vector3(0, -0.5f, -0.1f), ParticleHitGround.gameObject.transform.rotation);
     }
 
     public void Jump()

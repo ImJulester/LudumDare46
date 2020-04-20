@@ -26,7 +26,6 @@ public class Door : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        Debug.Log("je;d");
         if (collision.gameObject.tag == "Player")
         {
             GetComponent<Animator>().SetTrigger("Open");
