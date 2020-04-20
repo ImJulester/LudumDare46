@@ -172,15 +172,16 @@ public class Player : MonoBehaviour
     }
     void FixedUpdate()
     {
-        Move(finalVelocityX, finalVelocityY);
+        
         //Debug.Log(state.ToString());
         if (state == PlayerState.dying)
         {
             return;
         }
-        
 
-        if(state == PlayerState.crouch)
+        Move(finalVelocityX, finalVelocityY);
+
+        if (state == PlayerState.crouch)
         {
             if (stuckInCrouch && velocityX < crawlSpeed)
             {
@@ -329,9 +330,9 @@ public class Player : MonoBehaviour
 
     }
 
-    void PickupFlame()
+    void PickupFlame(float amount)
     {
-        flameValue += maxFlame / 5;
+        flameValue += amount;
         if(flameValue > maxFlame)
         {
             flameValue = maxFlame;
@@ -352,12 +353,17 @@ public class Player : MonoBehaviour
 
         if (flameValue <= 0)
         {
-            state = PlayerState.dying;
+            Death();
             //DEATH
         }
 
 
 
+    }
+
+    void Death()
+    {
+        state = PlayerState.dying;
     }
     void InitDash(bool right)
     {
@@ -378,7 +384,6 @@ public class Player : MonoBehaviour
     {
         if (Mathf.Abs( Input.GetAxis("Horizontal")) > 0)
         {
-            Debug.Log("endinit set running");
             state = PlayerState.running;
             //set animator event 
             anim.SetBool("Running", true);
@@ -387,7 +392,6 @@ public class Player : MonoBehaviour
         }
         else
         {
-            Debug.Log("endinit set idle");
             state = PlayerState.idle;
             anim.SetBool("Idle", true);
             anim.SetBool("InitDash", false);
@@ -805,5 +809,33 @@ public class Player : MonoBehaviour
 
     }
 
+    private void OnParticleCollision(GameObject other)
+    {
+        ParticleSystem par = other.GetComponent<ParticleSystem>();
+        ParticleSystem.Particle[] particle;
+        particle = new ParticleSystem.Particle[par.main.maxParticles];
+        int numParticlesAlive = par.GetParticles(particle);
 
+        for (int i = 0; i < numParticlesAlive; i++)
+        {
+           
+            if(Vector2.Distance(transform.position,particle[i].position) < 0.7f)
+            {
+                particle[i].remainingLifetime = -1;
+            }
+        }
+        par.SetParticles(particle);
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+    }
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if(collision.GetComponent<Collectible>() != null)
+        {
+            PickupFlame(collision.GetComponent<Collectible>().fireAmount);
+            Destroy(collision.gameObject);
+        }
+    }
 }
