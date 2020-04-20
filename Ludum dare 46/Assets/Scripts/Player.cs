@@ -72,6 +72,7 @@ public class Player : MonoBehaviour
     public AudioClip jump;
     public AudioClip land;
     public AudioClip death;
+    public AudioClip pickUp;
     private enum PlayerState { idle, walking, initDash, running, jump, land, falling, dying, crouch };
 
     public Vector2 spikeKnockbackPower;
@@ -911,6 +912,7 @@ public class Player : MonoBehaviour
             else
             {
                 PickupFlame(collision.GetComponent<Collectible>().fireAmount);
+                audioSource.PlayOneShot(pickUp, 1);
                 Destroy(collision.gameObject);
             }
 
