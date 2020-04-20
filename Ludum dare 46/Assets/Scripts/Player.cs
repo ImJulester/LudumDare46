@@ -10,6 +10,8 @@ public class Player : MonoBehaviour
     [Header("Movement, 100 = 1 unit/second")]
     public float initDashSpeed;
     public float runSpeed;
+    public float crawlSpeed;
+    public float airSpeed;
 
     public float accelerationRate;
     public float decelerationRate;
@@ -19,13 +21,15 @@ public class Player : MonoBehaviour
     public float gravity;
 
 
-    private float velocityX;
-    private float velocityY;
+    public float velocityX;
+    public float velocityY;
 
     private float finalVelocityX;
     private float finalVelocityY;
 
     private bool grounded;
+
+    private bool stuckInCrouch = false;
 
     private BoxCollider2D collider;
     private Animator anim;
@@ -50,7 +54,7 @@ public class Player : MonoBehaviour
 
     public GameObject ParticleHitGround;
 
-    private enum PlayerState { idle, walking, initDash, running, jump, land, falling, dying };
+    private enum PlayerState { idle, walking, initDash, running, jump, land, falling, dying, crouch };
 
     PlayerState state = PlayerState.idle;
 
@@ -63,6 +67,8 @@ public class Player : MonoBehaviour
 
         initDashSpeed = initDashSpeed / 100.0f;
         runSpeed = runSpeed / 100.0f;
+        crawlSpeed = crawlSpeed / 100.0f;
+        airSpeed = airSpeed / 100.0f;
         accelerationRate = accelerationRate / 100.0f;
         decelerationRate = decelerationRate / 100.0f;
         jumpPower = jumpPower / 100.0f;
@@ -75,6 +81,7 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
+
         ManageFlame();
         if(state == PlayerState.dying)
         {
@@ -82,7 +89,74 @@ public class Player : MonoBehaviour
             Debug.Log("DEAD");
         }
 
-        if (grounded)
+        if (state == PlayerState.crouch)
+        {
+            float collisionOffset = 0.01f;
+            RaycastHit2D hitInfo2Dleft;
+            RaycastHit2D hitInfo2Dmid;
+            RaycastHit2D hitInfo2Dright;
+            float collidedDistance = float.MaxValue;
+            bool collided = false;
+
+            hitInfo2Dleft = Physics2D.Raycast(new Vector2(transform.position.x - (collider.bounds.extents.x - collisionOffset), transform.position.y + 0.5f), Vector2.up, Mathf.Abs(velocityY), groundLayermask);
+            hitInfo2Dmid = Physics2D.Raycast(new Vector2(transform.position.x, transform.position.y + 0.5f), Vector2.up, Mathf.Abs(velocityY), groundLayermask);
+            hitInfo2Dright = Physics2D.Raycast(new Vector2(transform.position.x + (collider.bounds.extents.x - collisionOffset), transform.position.y + 0.5f), Vector2.up, Mathf.Abs(velocityY), groundLayermask);
+
+            if (hitInfo2Dleft.collider != null)
+            {
+                collided = true;
+            }
+            if (hitInfo2Dmid.collider != null)
+            {
+                collided = true;
+            }
+
+            if (hitInfo2Dright.collider != null)
+            {
+                collided = true;
+            }
+
+            stuckInCrouch = collided;
+
+
+            if (Input.GetAxis("Vertical") >= 0)
+            {
+                if (!stuckInCrouch)
+                {
+                    stuckInCrouch = false;
+                    collider.size = new Vector2(collider.size.x, 1);
+                    collider.offset = new Vector2(0, 0);
+
+                    if (Mathf.Abs(Input.GetAxis("Horizontal")) > 0)
+                    {
+                        state = PlayerState.running;
+                        anim.SetBool("Crouch", false);
+                        anim.SetBool("Running", true);
+                        //Maybe change this to init dash? 
+                    }
+                    else
+                    {
+                        state = PlayerState.idle;
+                        anim.SetBool("Crouch", false);
+                        anim.SetBool("Idle", true);
+                    }
+                }
+
+            }
+        }
+        else if (Input.GetAxis("Vertical") < 0 && grounded)
+        {
+            state = PlayerState.crouch;
+            collider.size = new Vector2(collider.size.x, collider.size.y / 2);
+            collider.offset = new Vector2(0, -0.25f);
+            anim.SetBool("Idle", false);
+            anim.SetBool("InitDash", false);
+            anim.SetBool("Running", false);
+            anim.SetBool("Crouch", true);
+        }
+
+
+        if (grounded && !stuckInCrouch)
         {
             if (Input.GetButtonDown("Jump") || Input.GetButtonDown("C_Jump") && grounded)
             {
@@ -93,46 +167,33 @@ public class Player : MonoBehaviour
     }
     void FixedUpdate()
     {
-        if(state == PlayerState.dying)
+        Move(finalVelocityX, finalVelocityY);
+        //Debug.Log(state.ToString());
+        if (state == PlayerState.dying)
         {
             return;
         }
-        //Debug.Log("player state : " + state.ToString());
-        /*
-         //movement controller
-         if (Input.GetJoystickNames().Length > 0)
-         {
-             //hard coded deadzone
-             if (Mathf.Abs(Input.GetAxis("C_Horizontal")) > 0.35f)
-             {
-                 if (Input.GetAxis("C_Horizontal") > 0)
-                 {
-                     if(velocityX <= runSpeed)
-                     {
-                         Run(true);
-                     }
-                 }
-                 else if (Input.GetAxis("C_Horizontal") < 0)
-                 {
-                     if (velocityX >= -runSpeed)
-                     {
-                         Run(false);
-                     }
-                 }
+        
 
-             }
-         }*/
-
-
-        //if input while idle 
-        //initDash
-        //if init dash animation reached end
-        //check if still input 
-        // run or walk 
-
-        //if no input back to idle
-
-        //movement key
+        if(state == PlayerState.crouch)
+        {
+            if (stuckInCrouch && velocityX < crawlSpeed)
+            {
+                if (previousRunningInput > 0)
+                {
+                    //Crawl(true);
+                }
+                else if (previousRunningInput < 0)
+                {
+                    //Crawl(false);
+                }
+            }
+            else
+            {
+                deceleration();
+            }
+        }
+       
 
         if (state == PlayerState.idle)
         {
@@ -222,6 +283,21 @@ public class Player : MonoBehaviour
 
         }
 
+        if(state == PlayerState.jump)
+        {
+            if (Input.GetAxis("Horizontal") > 0)
+            {
+                AirMovement(true);
+            }
+            else if (Input.GetAxis("Horizontal") < 0)
+            {
+               AirMovement(false);
+            }
+            else
+            {
+                deceleration();
+            }
+        }
 
 
         /*if (Mathf.Abs(velocityX) > 0)
@@ -239,12 +315,12 @@ public class Player : MonoBehaviour
             Gravity();
         }
 
-
-        // Debug.Log("velocity x " + velocityX);
-        yAxisCollision();
+        
         xAxisCollision();
+        yAxisCollision();
+       
 
-        Move(finalVelocityX, finalVelocityY);
+        
 
     }
 
@@ -259,7 +335,7 @@ public class Player : MonoBehaviour
     void ManageFlame()
     {
         flameValue -= flameDecayRate * Time.deltaTime;
-        Debug.Log("flamevalue : " + flameValue);
+        //Debug.Log("flamevalue : " + flameValue);
         spriteRenderer.color = Color.Lerp(emptyFlameColor, fullFlameColor, flameValue / maxFlame);
 
         flameSlider.value = flameValue;
@@ -310,7 +386,26 @@ public class Player : MonoBehaviour
         }
     }
 
+    void AirMovement(bool right)
+    {
+        if (right)
+        {
+            if (velocityX <= airSpeed)
+            {
+                velocityX = Mathf.MoveTowards(velocityX, airSpeed, accelerationRate * Time.deltaTime);
+                transform.localScale = new Vector3(1, 1, 1);
+            }
 
+        }
+        else
+        {
+            if (velocityX >= -airSpeed)
+            {
+                velocityX = Mathf.MoveTowards(velocityX, -airSpeed, accelerationRate * Time.deltaTime);
+                transform.localScale = new Vector3(-1, 1, 1);
+            }
+        }
+    }
     void Run(bool right)
     {
         if (right)
@@ -327,6 +422,26 @@ public class Player : MonoBehaviour
             if (velocityX >= -runSpeed)
             {
                 velocityX = Mathf.MoveTowards(velocityX, -runSpeed, accelerationRate * Time.deltaTime);
+                transform.localScale = new Vector3(-1, 1, 1);
+            }
+        }
+    }
+    void Crawl(bool right)
+    {
+        if (right)
+        {
+            if (velocityX <= crawlSpeed)
+            {
+                velocityX = Mathf.MoveTowards(velocityX, crawlSpeed, accelerationRate * Time.deltaTime);
+                transform.localScale = new Vector3(1, 1, 1);
+            }
+
+        }
+        else
+        {
+            if (velocityX >= -crawlSpeed)
+            {
+                velocityX = Mathf.MoveTowards(velocityX, -crawlSpeed, accelerationRate * Time.deltaTime);
                 transform.localScale = new Vector3(-1, 1, 1);
             }
         }
@@ -354,20 +469,29 @@ public class Player : MonoBehaviour
         anim.SetBool("Running", false);
         anim.SetBool("Idle", false);
         anim.SetBool("InitDash", false);
+        anim.SetBool("Crouch", false);
     }
     bool yAxisCollision()
     {
         float collisionOffset = 0.01f;
-        if (velocityX > 0)
+        if (velocityX >= 0)
         {
             RaycastHit2D hitInfo2Dtop;
             RaycastHit2D hitInfo2Dmid;
             RaycastHit2D hitInfo2Dbot;
             float collidedDistance = float.MaxValue;
             bool collided = false;
-            hitInfo2Dtop = Physics2D.Raycast(new Vector2(transform.position.x + collider.bounds.extents.x, transform.position.y + (collider.bounds.extents.y - collisionOffset)), Vector2.right,Mathf.Abs(velocityX), groundLayermask);
-            hitInfo2Dmid = Physics2D.Raycast(new Vector2(transform.position.x + collider.bounds.extents.x, transform.position.y), Vector2.right, Mathf.Abs(velocityX), groundLayermask);
-            hitInfo2Dbot = Physics2D.Raycast(new Vector2(transform.position.x + collider.bounds.extents.x, transform.position.y - (collider.bounds.extents.y - collisionOffset)), Vector2.right, Mathf.Abs(velocityX), groundLayermask);
+
+#if UNITY_EDITOR
+            Debug.DrawRay(new Vector2(transform.position.x + collider.bounds.extents.x, collider.bounds.center.y + (collider.bounds.extents.y - collisionOffset)), Vector2.right, Color.red);
+            Debug.DrawRay(new Vector2(transform.position.x + collider.bounds.extents.x, collider.bounds.center.y), Vector2.right, Color.red);
+            Debug.DrawRay(new Vector2(transform.position.x + collider.bounds.extents.x, collider.bounds.center.y - (collider.bounds.extents.y - collisionOffset)), Vector2.right, Color.red);
+
+#endif
+
+            hitInfo2Dtop = Physics2D.Raycast(new Vector2(transform.position.x + collider.bounds.extents.x, collider.bounds.center.y + (collider.bounds.extents.y - collisionOffset)), Vector2.right,Mathf.Abs(velocityX), groundLayermask);
+            hitInfo2Dmid = Physics2D.Raycast(new Vector2(transform.position.x + collider.bounds.extents.x, collider.bounds.center.y), Vector2.right, Mathf.Abs(velocityX), groundLayermask);
+            hitInfo2Dbot = Physics2D.Raycast(new Vector2(transform.position.x + collider.bounds.extents.x, collider.bounds.center.y - (collider.bounds.extents.y - collisionOffset)), Vector2.right, Mathf.Abs(velocityX), groundLayermask);
             if (hitInfo2Dtop.collider != null)
             {
                 collided = true;
@@ -393,6 +517,27 @@ public class Player : MonoBehaviour
                 if (collidedDistance > hitInfo2Dbot.distance)
                 {
                     collidedDistance = hitInfo2Dbot.distance;
+                }
+            }
+
+            if (!grounded)
+            {
+                RaycastHit2D hitInfo2DextraBot;
+                float extraCheckOffset = 0.2f;
+
+#if UNITY_EDITOR
+                Debug.DrawRay(new Vector2(transform.position.x + collider.bounds.extents.x, collider.bounds.center.y - (collider.bounds.extents.y + extraCheckOffset)), Vector2.right, Color.red);
+#endif
+                hitInfo2DextraBot = Physics2D.Raycast(new Vector2(transform.position.x + collider.bounds.extents.x, collider.bounds.center.y - (collider.bounds.extents.y + extraCheckOffset)), Vector2.right, Mathf.Abs(velocityX), groundLayermask);
+
+                if (hitInfo2DextraBot.collider != null)
+                {
+                    collided = true;
+
+                    if (collidedDistance > hitInfo2DextraBot.distance)
+                    {
+                        collidedDistance = hitInfo2DextraBot.distance;
+                    }
                 }
             }
 
@@ -407,11 +552,19 @@ public class Player : MonoBehaviour
             RaycastHit2D hitInfo2Dtop;
             RaycastHit2D hitInfo2Dmid;
             RaycastHit2D hitInfo2Dbot;
+
+#if UNITY_EDITOR
+            Debug.DrawRay(new Vector2(transform.position.x - collider.bounds.extents.x, collider.bounds.center.y + (collider.bounds.extents.y - collisionOffset)), Vector2.left, Color.red);
+            Debug.DrawRay(new Vector2(transform.position.x - collider.bounds.extents.x, collider.bounds.center.y), Vector2.left, Color.red);
+            Debug.DrawRay(new Vector2(transform.position.x - collider.bounds.extents.x, collider.bounds.center.y - (collider.bounds.extents.y - collisionOffset)), Vector2.left, Color.red);
+
+#endif
+
             float collidedDistance = float.MaxValue;
             bool collided = false;
-            hitInfo2Dtop = Physics2D.Raycast(new Vector2(transform.position.x - collider.bounds.extents.x, transform.position.y + (collider.bounds.extents.y - collisionOffset)), Vector2.left, Mathf.Abs(velocityX), groundLayermask);
-            hitInfo2Dmid = Physics2D.Raycast(new Vector2(transform.position.x - collider.bounds.extents.x, transform.position.y), Vector2.left, Mathf.Abs(velocityX), groundLayermask);
-            hitInfo2Dbot = Physics2D.Raycast(new Vector2(transform.position.x - collider.bounds.extents.x, transform.position.y - (collider.bounds.extents.y - collisionOffset)), Vector2.left, Mathf.Abs(velocityX), groundLayermask);
+            hitInfo2Dtop = Physics2D.Raycast(new Vector2(transform.position.x - collider.bounds.extents.x, collider.bounds.center.y + (collider.bounds.extents.y - collisionOffset)), Vector2.left, Mathf.Abs(velocityX), groundLayermask);
+            hitInfo2Dmid = Physics2D.Raycast(new Vector2(transform.position.x - collider.bounds.extents.x, collider.bounds.center.y), Vector2.left, Mathf.Abs(velocityX), groundLayermask);
+            hitInfo2Dbot = Physics2D.Raycast(new Vector2(transform.position.x - collider.bounds.extents.x, collider.bounds.center.y - (collider.bounds.extents.y - collisionOffset)), Vector2.left, Mathf.Abs(velocityX), groundLayermask);
             if (hitInfo2Dtop.collider != null)
             {
                 collided = true;
@@ -437,6 +590,28 @@ public class Player : MonoBehaviour
                 if (collidedDistance > hitInfo2Dbot.distance)
                 {
                     collidedDistance = hitInfo2Dbot.distance;
+                }
+            }
+
+            if (!grounded)
+            {
+                RaycastHit2D hitInfo2DextraBot;
+                float extraCheckOffset = 0.2f;
+
+#if UNITY_EDITOR
+                Debug.DrawRay(new Vector2(transform.position.x - collider.bounds.extents.x, collider.bounds.center.y - (collider.bounds.extents.y + extraCheckOffset)), Vector2.left, Color.red);
+#endif
+              
+                hitInfo2DextraBot = Physics2D.Raycast(new Vector2(transform.position.x - collider.bounds.extents.x, collider.bounds.center.y - (collider.bounds.extents.y + extraCheckOffset)), Vector2.left, Mathf.Abs(velocityX), groundLayermask);
+
+                if (hitInfo2DextraBot.collider != null)
+                {
+                    collided = true;
+
+                    if (collidedDistance > hitInfo2DextraBot.distance)
+                    {
+                        collidedDistance = hitInfo2DextraBot.distance;
+                    }
                 }
             }
 
@@ -459,9 +634,17 @@ public class Player : MonoBehaviour
             RaycastHit2D hitInfo2Dright;
             float collidedDistance = float.MaxValue;
             bool collided = false;
-            hitInfo2Dleft = Physics2D.Raycast(new Vector2(transform.position.x - (collider.bounds.extents.x - collisionOffset) , transform.position.y + collider.bounds.extents.y), Vector2.up, Mathf.Abs(velocityY), groundLayermask);
-            hitInfo2Dmid = Physics2D.Raycast(new Vector2(transform.position.x, transform.position.y + collider.bounds.extents.y), Vector2.up, Mathf.Abs(velocityY), groundLayermask);
-            hitInfo2Dright = Physics2D.Raycast(new Vector2(transform.position.x + (collider.bounds.extents.x - collisionOffset), transform.position.y + collider.bounds.extents.y), Vector2.up, Mathf.Abs(velocityY), groundLayermask);
+
+#if UNITY_EDITOR
+            Debug.DrawRay(new Vector2(transform.position.x - (collider.bounds.extents.x - collisionOffset), transform.position.y + 0.5f), Vector2.up, Color.red);
+            Debug.DrawRay(new Vector2(transform.position.x, transform.position.y + 0.5f), Vector2.up, Color.red);
+            Debug.DrawRay(new Vector2(transform.position.x + (collider.bounds.extents.x - collisionOffset), transform.position.y + 0.5f), Vector2.up, Color.red);
+
+#endif
+
+            hitInfo2Dleft = Physics2D.Raycast(new Vector2(transform.position.x - (collider.bounds.extents.x - collisionOffset) , transform.position.y + 0.5f), Vector2.up, Mathf.Abs(velocityY), groundLayermask);
+            hitInfo2Dmid = Physics2D.Raycast(new Vector2(transform.position.x, transform.position.y + 0.5f), Vector2.up, Mathf.Abs(velocityY), groundLayermask);
+            hitInfo2Dright = Physics2D.Raycast(new Vector2(transform.position.x + (collider.bounds.extents.x - collisionOffset), transform.position.y + 0.5f), Vector2.up, Mathf.Abs(velocityY), groundLayermask);
             if (hitInfo2Dleft.collider != null)
             {
                 collided = true;
@@ -503,9 +686,16 @@ public class Player : MonoBehaviour
             RaycastHit2D hitInfo2Dright;
             float collidedDistance = float.MaxValue;
             bool collided = false;
-            hitInfo2Dleft = Physics2D.Raycast(new Vector2(transform.position.x - (collider.bounds.extents.x - collisionOffset), transform.position.y - collider.bounds.extents.y), Vector2.down, Mathf.Abs(velocityY), groundLayermask);
-            hitInfo2Dmid = Physics2D.Raycast(new Vector2(transform.position.x, transform.position.y - collider.bounds.extents.y), Vector2.down, Mathf.Abs(velocityY), groundLayermask);
-            hitInfo2Dright = Physics2D.Raycast(new Vector2(transform.position.x + (collider.bounds.extents.x - collisionOffset), transform.position.y - collider.bounds.extents.y), Vector2.down, Mathf.Abs(velocityY), groundLayermask);
+
+#if UNITY_EDITOR
+            Debug.DrawRay(new Vector2(transform.position.x - (collider.bounds.extents.x - collisionOffset), transform.position.y - 0.5f), Vector2.down , Color.red);
+            Debug.DrawRay(new Vector2(transform.position.x, transform.position.y - 0.5f), Vector2.down , Color.red);
+            Debug.DrawRay(new Vector2(transform.position.x + (collider.bounds.extents.x - collisionOffset), transform.position.y - 0.5f), Vector2.down , Color.red);
+
+#endif
+            hitInfo2Dleft = Physics2D.Raycast(new Vector2(transform.position.x - (collider.bounds.extents.x - collisionOffset), transform.position.y - 0.5f), Vector2.down, Mathf.Abs(velocityY), groundLayermask);
+            hitInfo2Dmid = Physics2D.Raycast(new Vector2(transform.position.x, transform.position.y - 0.5f), Vector2.down, Mathf.Abs(velocityY), groundLayermask);
+            hitInfo2Dright = Physics2D.Raycast(new Vector2(transform.position.x + (collider.bounds.extents.x - collisionOffset), transform.position.y - 0.5f), Vector2.down, Mathf.Abs(velocityY), groundLayermask);
             if (hitInfo2Dleft.collider != null)
             {
                 collided = true;
@@ -552,6 +742,7 @@ public class Player : MonoBehaviour
         float endX = x;
         float endY = y;
         transform.position = transform.position +  new Vector3(endX, endY,0);
+        Physics2D.SyncTransforms();
     }
 
     void Grounded(bool isGrounded)
@@ -565,12 +756,21 @@ public class Player : MonoBehaviour
                 if(state == PlayerState.jump)
                 {
                     anim.SetTrigger("Land");
-                    if (Mathf.Abs(Input.GetAxis("Horizontal")) > 0)
+                    if (Input.GetAxis("Vertical") < 0)
+                    {
+                        state = PlayerState.crouch;
+                        anim.SetBool("Running", false) ;
+                        anim.SetBool("InitDash", false);
+                        anim.SetBool("Idle", false);
+                        anim.SetBool("Crouch", true);
+                    }
+                    else if (Mathf.Abs(Input.GetAxis("Horizontal")) > 0)
                     {
                         state = PlayerState.running;
                         anim.SetBool("Running", true);
                         anim.SetBool("InitDash", false);
                         anim.SetBool("Idle", false);
+                        anim.SetBool("Crouch", false);
                     }
                     else
                     {
@@ -578,6 +778,7 @@ public class Player : MonoBehaviour
                         anim.SetBool("InitDash", false);
                         anim.SetBool("Running", false);
                         anim.SetBool("Idle", true);
+                        anim.SetBool("Crouch", false);
                     }
                     
                 }
