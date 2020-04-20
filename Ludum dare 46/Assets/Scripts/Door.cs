@@ -21,6 +21,7 @@ public class Door : MonoBehaviour
         if(collision.gameObject.tag == "Player")
         {
             GetComponent<Animator>().SetTrigger("Open");
+            Destroy(GetComponent<BoxCollider2D>());
         }
     }
 
@@ -29,6 +30,7 @@ public class Door : MonoBehaviour
         if (collision.gameObject.tag == "Player")
         {
             GetComponent<Animator>().SetTrigger("Open");
+            Destroy(GetComponent<BoxCollider2D>());
         }
     }
 }

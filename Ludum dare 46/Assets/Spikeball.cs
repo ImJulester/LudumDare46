@@ -38,7 +38,6 @@ public class Spikeball : MonoBehaviour
             if (currentSpeed <= maxSpeed * -1)
             {
                 reverse = true;
-                Debug.Log(currentSpeed);
             }
         }
     }
