@@ -74,6 +74,8 @@ public class Player : MonoBehaviour
     public AudioClip death;
     private enum PlayerState { idle, walking, initDash, running, jump, land, falling, dying, crouch };
 
+    public Vector2 spikeKnockbackPower;
+
     PlayerState state = PlayerState.idle;
 
 
@@ -850,6 +852,7 @@ public class Player : MonoBehaviour
         if (!isGrounded)
         {
             grounded = false;
+            state = PlayerState.jump;
         }
 
     }
@@ -893,8 +896,24 @@ public class Player : MonoBehaviour
     {
         if(collision.GetComponent<Collectible>() != null)
         {
-            PickupFlame(collision.GetComponent<Collectible>().fireAmount);
-            Destroy(collision.gameObject);
+            if (collision.tag == "Spike")
+            {
+                Debug.Log("HIT SPIKE");
+                Vector2 dir = transform.position - collision.transform.position;
+                dir.y += 1;
+                dir.Normalize();
+                dir *= spikeKnockbackPower;
+                velocityX = dir.x;
+                velocityY = dir.y;
+                
+                audioSource.PlayOneShot(hitSnow);
+            }
+            else
+            {
+                PickupFlame(collision.GetComponent<Collectible>().fireAmount);
+                Destroy(collision.gameObject);
+            }
+
         }
     }
 }

@@ -56362,6 +56362,16 @@ PrefabInstance:
       propertyPath: snowDamage
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 1694477949207436551, guid: 3cd457e3ff580fd4ba2610aabc26746b,
+        type: 3}
+      propertyPath: spikeKnockbackPower.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1694477949207436551, guid: 3cd457e3ff580fd4ba2610aabc26746b,
+        type: 3}
+      propertyPath: spikeKnockbackPower.y
+      value: 0.3
+      objectReference: {fileID: 0}
     - target: {fileID: 1694477949207436568, guid: 3cd457e3ff580fd4ba2610aabc26746b,
         type: 3}
       propertyPath: m_IsTrigger

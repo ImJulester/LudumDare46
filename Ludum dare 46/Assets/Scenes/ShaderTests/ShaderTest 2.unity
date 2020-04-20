@@ -98,7 +98,7 @@ LightmapSettings:
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 0}
-  m_UseShadowmask: 1
+  m_UseShadowmask: 0
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -3579,10 +3579,25 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 9012135435347150804, guid: 65261ed59fce0af4cb82aec025fc74f0,
+        type: 3}
+      propertyPath: m_TagString
+      value: Spike
+      objectReference: {fileID: 0}
+    - target: {fileID: 9012135435425260132, guid: 65261ed59fce0af4cb82aec025fc74f0,
+        type: 3}
+      propertyPath: m_TagString
+      value: Spike
+      objectReference: {fileID: 0}
     - target: {fileID: 9012135435906847171, guid: 65261ed59fce0af4cb82aec025fc74f0,
         type: 3}
       propertyPath: m_Name
       value: Spikeball
+      objectReference: {fileID: 0}
+    - target: {fileID: 9012135435906847171, guid: 65261ed59fce0af4cb82aec025fc74f0,
+        type: 3}
+      propertyPath: m_TagString
+      value: Spike
       objectReference: {fileID: 0}
     - target: {fileID: 9012135435906847173, guid: 65261ed59fce0af4cb82aec025fc74f0,
         type: 3}
@@ -3639,8 +3654,63 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 104.229
       objectReference: {fileID: 0}
+    - target: {fileID: 9012135436390184009, guid: 65261ed59fce0af4cb82aec025fc74f0,
+        type: 3}
+      propertyPath: m_TagString
+      value: Spike
+      objectReference: {fileID: 0}
+    - target: {fileID: 9012135436505119414, guid: 65261ed59fce0af4cb82aec025fc74f0,
+        type: 3}
+      propertyPath: m_TagString
+      value: Spike
+      objectReference: {fileID: 0}
+    - target: {fileID: 9012135436610104194, guid: 65261ed59fce0af4cb82aec025fc74f0,
+        type: 3}
+      propertyPath: m_TagString
+      value: Spike
+      objectReference: {fileID: 0}
+    - target: {fileID: 9012135436771606680, guid: 65261ed59fce0af4cb82aec025fc74f0,
+        type: 3}
+      propertyPath: m_TagString
+      value: Spike
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 65261ed59fce0af4cb82aec025fc74f0, type: 3}
+--- !u!1 &139796085 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 9012135436390184009, guid: 65261ed59fce0af4cb82aec025fc74f0,
+    type: 3}
+  m_PrefabInstance: {fileID: 139796084}
+  m_PrefabAsset: {fileID: 0}
+--- !u!58 &139796086
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 139796085}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: -0.0000009536743, y: -0.0000038146973}
+  serializedVersion: 2
+  m_Radius: 0.35
+--- !u!114 &139796087
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 139796085}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f81d3baea53aae743a2cd7352f778b0f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fireAmount: -20
 --- !u!1 &142710933
 GameObject:
   m_ObjectHideFlags: 0
@@ -4461,10 +4531,14 @@ MonoBehaviour:
     m_Bits: 256
   initDashSpeed: 2
   runSpeed: 15
+  crawlSpeed: 0
+  airSpeed: 0
   accelerationRate: 40
   decelerationRate: 16
   jumpPower: 43
   gravity: 100
+  velocityX: 0
+  velocityY: 0
   spriteRenderer: {fileID: 1540432579}
   fullFlameColor: {r: 1, g: 1, b: 1, a: 1}
   emptyFlameColor: {r: 0, g: 0, b: 0, a: 1}
@@ -4472,12 +4546,23 @@ MonoBehaviour:
   startFlame: 10
   flameDecayRate: 1
   rainFlameDecayRate: 1
+  snowDamage: 0
   flameSlider: {fileID: 1363208945}
+  flameValueText: {fileID: 0}
   flameFill: {fileID: 2101500425}
   flameFillFull: {r: 1, g: 0.27234688, b: 0, a: 1}
   flameFillEmpty: {r: 0, g: 1, b: 0.8221004, a: 1}
   ParticleHitGround: {fileID: 5650545613898462224, guid: d3481b71064da944a92238fd79c735f0,
     type: 3}
+  fireParticle: {fileID: 0}
+  fireLight: {fileID: 0}
+  minParticleLifetime: 0
+  fullParticleLifetime: 0
+  deathPrefab: {fileID: 0}
+  hitSnow: {fileID: 0}
+  jump: {fileID: 0}
+  land: {fileID: 0}
+  death: {fileID: 0}
 --- !u!212 &162560815
 SpriteRenderer:
   m_ObjectHideFlags: 0
