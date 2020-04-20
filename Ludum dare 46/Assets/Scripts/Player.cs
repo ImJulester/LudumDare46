@@ -31,6 +31,7 @@ public class Player : MonoBehaviour
     private bool grounded;
 
     private bool stuckInCrouch = false;
+    private bool died = false;
 
     private BoxCollider2D collider;
     private Animator anim;
@@ -368,19 +369,24 @@ public class Player : MonoBehaviour
 
     void Death()
     {
-        spriteRenderer.enabled = false;
-        state = PlayerState.dying;
-        GameObject g = Instantiate(deathPrefab, transform.position, transform.rotation) as GameObject;
-        SpriteRenderer[] sprites = g.GetComponentsInChildren<SpriteRenderer>();
-        Rigidbody2D[] rb2ds = g.GetComponentsInChildren<Rigidbody2D>();
-        int size = sprites.Length;
-
-        for(int i =0; i < size; i++)
+        if (!died)
         {
-            sprites[i].color = spriteRenderer.color;
-            rb2ds[i].AddForce(new Vector2(Random.Range(-1.0f, 1.0f), Random.Range(-1.0f, 1.0f)) * 200);
+            spriteRenderer.enabled = false;
+            state = PlayerState.dying;
+            GameObject g = Instantiate(deathPrefab, transform.position, transform.rotation) as GameObject;
+            SpriteRenderer[] sprites = g.GetComponentsInChildren<SpriteRenderer>();
+            Rigidbody2D[] rb2ds = g.GetComponentsInChildren<Rigidbody2D>();
+            int size = sprites.Length;
+
+            for (int i = 0; i < size; i++)
+            {
+                sprites[i].color = spriteRenderer.color;
+                rb2ds[i].AddForce(new Vector2(Random.Range(-1.0f, 1.0f), Random.Range(-1.0f, 1.0f)) * 200);
+            }
+            StartCoroutine(deathWait());
+            died = true;
         }
-        StartCoroutine(deathWait());
+        
     }
 
     IEnumerator deathWait()
