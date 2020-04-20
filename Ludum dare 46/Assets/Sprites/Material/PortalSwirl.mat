@@ -7,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: spriteGlowWaveScreenPos
-  m_Shader: {fileID: -6465566751694194690, guid: 7ba91e023c92db84c9a4d5d05f4faae2,
+  m_Name: PortalSwirl
+  m_Shader: {fileID: -6465566751694194690, guid: 854f8f8caf113de469cd0c99788500cc,
     type: 3}
   m_ShaderKeywords: ETC1_EXTERNAL_ALPHA
   m_LightmapFlags: 4
@@ -21,24 +21,21 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _Emission:
-        m_Texture: {fileID: 2800000, guid: 6cc7d531f1929714eb4524724e2c61b4, type: 3}
+        m_Texture: {fileID: 2800000, guid: 15ee24b7c911af44f8095bc6cd234e9d, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: ecc5489581799e54eb83bd421c9010bf, type: 3}
+        m_Texture: {fileID: 2800000, guid: ae7d4e1506fab0245bcbcc0bd3576951, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
-    - Boolean_66C5762A: 1
-    - Boolean_925B9A95: 1
-    - Vector1_1C041F9B: 0.05
-    - Vector1_4ADD7F39: 0.2
-    - _WaveSize: 2
+    - Boolean_925B9A95: 0
+    - _WAVETYPE: 0
+    - _WaveSize: 0.1
     m_Colors:
     - Color_EBB01644: {r: 5.278032, g: 3.9533494, b: 0.6623413, a: 0.8862745}
     - SinEmissionMovement: {r: 1, g: 0, b: 0, a: 0}
-    - Vector2_4DFDE443: {r: 20, g: 20, b: 0, a: 0}
-    - Vector2_8F9DE258: {r: -100, g: -20, b: 0, a: 0}
-    - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _EmissionColorHighlight: {r: 0.003693494, g: 0.060024936, b: 0.7830189, a: 1}
+    - _EmissionColor: {r: 0, g: 0.3755316, b: 0.8705506, a: 0.8862745}
+    - _EmissionColorHighlight: {r: 0, g: 1.7207954, b: 1.6487201, a: 0.8862745}
     - _EmissionUV: {r: 0, g: 0, b: 0, a: 0}
+    - _WaveDir: {r: 1, g: 1, b: 0, a: 0}

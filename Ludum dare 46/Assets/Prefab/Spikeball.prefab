@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 9012135435347150806}
   m_Layer: 0
   m_Name: Spikebal Chain (3)
-  m_TagString: Untagged
+  m_TagString: Spike
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -93,7 +93,7 @@ GameObject:
   - component: {fileID: 9012135435425260134}
   m_Layer: 0
   m_Name: Spikebal Chain (2)
-  m_TagString: Untagged
+  m_TagString: Spike
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -174,7 +174,7 @@ GameObject:
   - component: {fileID: 9012135435906847172}
   m_Layer: 0
   m_Name: Spikeball
-  m_TagString: Untagged
+  m_TagString: Spike
   m_Icon: {fileID: 4162164826716764455, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -224,9 +224,11 @@ GameObject:
   m_Component:
   - component: {fileID: 9012135436390184010}
   - component: {fileID: 9012135436390184011}
+  - component: {fileID: 139796086}
+  - component: {fileID: 139796087}
   m_Layer: 0
   m_Name: Spikeball
-  m_TagString: Untagged
+  m_TagString: Spike
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -295,6 +297,35 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!58 &139796086
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9012135436390184009}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: -0.0000009536743, y: -0.0000038146973}
+  serializedVersion: 2
+  m_Radius: 0.35
+--- !u!114 &139796087
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9012135436390184009}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f81d3baea53aae743a2cd7352f778b0f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fireAmount: -20
 --- !u!1 &9012135436505119414
 GameObject:
   m_ObjectHideFlags: 0
@@ -307,7 +338,7 @@ GameObject:
   - component: {fileID: 9012135436505119416}
   m_Layer: 0
   m_Name: Spikebal Chain (1)
-  m_TagString: Untagged
+  m_TagString: Spike
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -388,7 +419,7 @@ GameObject:
   - component: {fileID: 9012135436610104196}
   m_Layer: 0
   m_Name: Spikeball Outline
-  m_TagString: Untagged
+  m_TagString: Spike
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -469,7 +500,7 @@ GameObject:
   - component: {fileID: 9012135436771606682}
   m_Layer: 0
   m_Name: Spikebal Chain
-  m_TagString: Untagged
+  m_TagString: Spike
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

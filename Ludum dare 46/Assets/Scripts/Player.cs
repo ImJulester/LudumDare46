@@ -14,6 +14,8 @@ public class Player : MonoBehaviour
     public float crawlSpeed;
     public float airSpeed;
 
+
+
     public float accelerationRate;
     public float decelerationRate;
 
@@ -31,6 +33,7 @@ public class Player : MonoBehaviour
     private bool grounded;
 
     private bool stuckInCrouch = false;
+    private bool died = false;
 
     private BoxCollider2D collider;
     private Animator anim;
@@ -46,6 +49,7 @@ public class Player : MonoBehaviour
     public float startFlame;
     public float flameDecayRate;
     public float rainFlameDecayRate;
+    public float snowDamage;
     private float flameValue;
 
     public Slider flameSlider;
@@ -61,7 +65,16 @@ public class Player : MonoBehaviour
     public float fullParticleLifetime;
 
     public GameObject deathPrefab;
+    private AudioSource audioSource;
+
+    [Header("audio clips")]
+    public AudioClip hitSnow;
+    public AudioClip jump;
+    public AudioClip land;
+    public AudioClip death;
     private enum PlayerState { idle, walking, initDash, running, jump, land, falling, dying, crouch };
+
+    public Vector2 spikeKnockbackPower;
 
     PlayerState state = PlayerState.idle;
 
@@ -84,18 +97,21 @@ public class Player : MonoBehaviour
         flameValue = startFlame;
         anim = GetComponent<Animator>();
         collider = GetComponent<BoxCollider2D>();
+        audioSource = GetComponent<AudioSource>();
         //spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
     private void Update()
     {
 
-        ManageFlame();
+       
         if(state == PlayerState.dying)
         {
+            return;
             //Play animation and destroy player?
             Debug.Log("DEAD");
         }
+        ManageFlame();
 
         if (state == PlayerState.crouch)
         {
@@ -368,24 +384,30 @@ public class Player : MonoBehaviour
 
     void Death()
     {
-        spriteRenderer.enabled = false;
-        state = PlayerState.dying;
-        GameObject g = Instantiate(deathPrefab, transform.position, transform.rotation) as GameObject;
-        SpriteRenderer[] sprites = g.GetComponentsInChildren<SpriteRenderer>();
-        Rigidbody2D[] rb2ds = g.GetComponentsInChildren<Rigidbody2D>();
-        int size = sprites.Length;
-
-        for(int i =0; i < size; i++)
+        if (!died)
         {
-            sprites[i].color = spriteRenderer.color;
-            rb2ds[i].AddForce(new Vector2(Random.Range(-1.0f, 1.0f), Random.Range(-1.0f, 1.0f)) * 200);
+            audioSource.PlayOneShot(death,1);
+            spriteRenderer.enabled = false;
+            state = PlayerState.dying;
+            GameObject g = Instantiate(deathPrefab, transform.position, transform.rotation) as GameObject;
+            SpriteRenderer[] sprites = g.GetComponentsInChildren<SpriteRenderer>();
+            Rigidbody2D[] rb2ds = g.GetComponentsInChildren<Rigidbody2D>();
+            int size = sprites.Length;
+
+            for (int i = 0; i < size; i++)
+            {
+                sprites[i].color = spriteRenderer.color;
+                rb2ds[i].AddForce(new Vector2(Random.Range(-1.0f, 1.0f), Random.Range(-1.0f, 1.0f)) * 200);
+            }
+            StartCoroutine(deathWait());
+            died = true;
         }
-        StartCoroutine(deathWait());
+        
     }
 
     IEnumerator deathWait()
     {
-        yield return new WaitForSeconds(1);
+        yield return new WaitForSeconds(2);
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
     void InitDash(bool right)
@@ -499,6 +521,7 @@ public class Player : MonoBehaviour
 
     public void Jump()
     {
+        audioSource.PlayOneShot(jump);
         velocityY = jumpPower;
         grounded = false;
         state = PlayerState.jump;
@@ -796,6 +819,7 @@ public class Player : MonoBehaviour
                 if(state == PlayerState.jump)
                 {
                     anim.SetTrigger("Land");
+                    audioSource.PlayOneShot(land);
                     if (Input.GetAxis("Vertical") < 0)
                     {
                         state = PlayerState.crouch;
@@ -828,12 +852,14 @@ public class Player : MonoBehaviour
         if (!isGrounded)
         {
             grounded = false;
+            state = PlayerState.jump;
         }
 
     }
 
     private void OnParticleCollision(GameObject other)
     {
+        bool hit = false;
         ParticleSystem par = other.GetComponent<ParticleSystem>();
         ParticleSystem.Particle[] particle;
         particle = new ParticleSystem.Particle[par.main.maxParticles];
@@ -844,10 +870,23 @@ public class Player : MonoBehaviour
            
             if(Vector2.Distance(transform.position,particle[i].position) < 0.7f)
             {
+                
                 particle[i].remainingLifetime = -1;
+                Vector3 velocity = particle[i].velocity;
+                Debug.Log("velocity mangitude" + velocity.magnitude);
+                if(!grounded)
+                {
+                    flameValue -= snowDamage;
+                    hit = true;
+                }
+                
             }
         }
         par.SetParticles(particle);
+        if (hit)
+        {
+            audioSource.PlayOneShot(hitSnow,0.3f);
+        }
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -857,8 +896,24 @@ public class Player : MonoBehaviour
     {
         if(collision.GetComponent<Collectible>() != null)
         {
-            PickupFlame(collision.GetComponent<Collectible>().fireAmount);
-            Destroy(collision.gameObject);
+            if (collision.tag == "Spike")
+            {
+                Debug.Log("HIT SPIKE");
+                Vector2 dir = transform.position - collision.transform.position;
+                dir.y += 1;
+                dir.Normalize();
+                dir *= spikeKnockbackPower;
+                velocityX = dir.x;
+                velocityY = dir.y;
+                
+                audioSource.PlayOneShot(hitSnow);
+            }
+            else
+            {
+                PickupFlame(collision.GetComponent<Collectible>().fireAmount);
+                Destroy(collision.gameObject);
+            }
+
         }
     }
 }
