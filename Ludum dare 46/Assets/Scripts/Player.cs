@@ -354,7 +354,7 @@ public class Player : MonoBehaviour
 
         fireParticle.startLifetime = Mathf.Lerp(minParticleLifetime,fullParticleLifetime , flameValue / maxFlame);
 
-        flameValueText.text = (int)flameValue + "";
+        flameValueText.text = Mathf.Ceil(flameValue) + "";
 
         if (flameValue <= 0)
         {
