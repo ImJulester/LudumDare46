@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-
+using UnityEngine.Experimental.Rendering.Universal;
 public class Player : MonoBehaviour
 {
 
@@ -51,8 +51,12 @@ public class Player : MonoBehaviour
     public Image flameFill;
     public Color flameFillFull;
     public Color flameFillEmpty;
-
     public GameObject ParticleHitGround;
+    public ParticleSystem fireParticle;
+    public Light2D fireLight;
+    
+    public float minParticleLifetime;
+    public float fullParticleLifetime;
 
     private enum PlayerState { idle, walking, initDash, running, jump, land, falling, dying, crouch };
 
@@ -64,6 +68,7 @@ public class Player : MonoBehaviour
     {
         flameSlider.maxValue = maxFlame;
         flameSlider.value = startFlame;
+        fireParticle.startLifetime = fullParticleLifetime;
 
         initDashSpeed = initDashSpeed / 100.0f;
         runSpeed = runSpeed / 100.0f;
@@ -340,6 +345,10 @@ public class Player : MonoBehaviour
 
         flameSlider.value = flameValue;
         flameFill.color = Color.Lerp(flameFillEmpty, flameFillFull, flameValue / maxFlame);
+
+        fireLight.intensity = Mathf.Lerp(0, 1.5f, flameValue/ maxFlame);
+
+        fireParticle.startLifetime = Mathf.Lerp(minParticleLifetime,fullParticleLifetime , flameValue / maxFlame);
 
         if (flameValue <= 0)
         {
