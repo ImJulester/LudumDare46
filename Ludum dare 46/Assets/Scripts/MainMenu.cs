@@ -7,6 +7,7 @@ public class MainMenu : MonoBehaviour
     bool startGame;
     public Camera gameCamera;
     public Player player;
+    public GameObject secondCanvas;
     public GameObject mainMenuCanvas;
     public GameObject settings;
 
@@ -23,7 +24,7 @@ public class MainMenu : MonoBehaviour
         thisCamera = GetComponent<Camera>();
         MenuCameraSize = thisCamera.orthographicSize;
         startPos = transform.position;
-
+        secondCanvas.SetActive(false);
     }
 
     // Update is called once per frame
@@ -40,6 +41,7 @@ public class MainMenu : MonoBehaviour
             {
                 gameCamera.enabled = true;
                 player.enabled = true;
+                secondCanvas.SetActive(true);
                 Destroy(gameObject);
 
             }
