@@ -876,11 +876,11 @@ public class Player : MonoBehaviour
                 particle[i].remainingLifetime = -1;
                 Vector3 velocity = particle[i].velocity;
                 Debug.Log("velocity mangitude" + velocity.magnitude);
-                if(!grounded)
-                {
+                //if(!grounded)
+                //{
                     flameValue -= snowDamage;
                     hit = true;
-                }
+                //}
                 
             }
         }
