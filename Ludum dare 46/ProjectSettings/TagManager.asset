@@ -6,6 +6,8 @@ TagManager:
   tags:
   - Collectible
   - Spike
+  - Ignore
+  - Portal
   layers:
   - Default
   - TransparentFX

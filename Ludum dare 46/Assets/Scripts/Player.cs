@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Experimental.Rendering.Universal;
 using UnityEngine.SceneManagement;
+
 public class Player : MonoBehaviour
 {
 
@@ -916,6 +917,10 @@ public class Player : MonoBehaviour
                 Destroy(collision.gameObject);
             }
 
+        }
+        if(collision.gameObject.tag == "Portal")
+        {
+            SceneManager.LoadScene("FinalLevel 2");
         }
     }
 }
