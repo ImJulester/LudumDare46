@@ -18,7 +18,7 @@ public class Parralax : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void LateUpdate()
     {
         float temp = (camera.transform.position.x * (1-parralaxEffect));
         float dist = (camera.transform.position.x * parralaxEffect);
