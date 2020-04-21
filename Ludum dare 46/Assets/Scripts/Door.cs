@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Door : MonoBehaviour
 {
+
+    public AudioSource openDoor;
     // Start is called before the first frame update
     void Start()
     {
@@ -21,6 +23,7 @@ public class Door : MonoBehaviour
         if(collision.gameObject.tag == "Player")
         {
             GetComponent<Animator>().SetTrigger("Open");
+            openDoor.Play();
             Destroy(GetComponent<BoxCollider2D>());
         }
     }
@@ -30,6 +33,7 @@ public class Door : MonoBehaviour
         if (collision.gameObject.tag == "Player")
         {
             GetComponent<Animator>().SetTrigger("Open");
+            openDoor.Play();
             Destroy(GetComponent<BoxCollider2D>());
         }
     }
