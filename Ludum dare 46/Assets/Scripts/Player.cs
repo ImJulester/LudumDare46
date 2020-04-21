@@ -85,6 +85,10 @@ public class Player : MonoBehaviour
 
     private GameObject activeSettings;
 
+
+    private bool invincible;
+    public float invicinbilityTime = 1;
+    private float invicinbilityTimer = 1;
     
 
     // Start is called before the first frame update
@@ -111,6 +115,17 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
+        if (invincible)
+        {
+            invicinbilityTimer -= Time.deltaTime;
+
+            if(invicinbilityTimer < 0)
+            {
+                invincible = false;
+            }
+        }
+
+
         if (Input.GetKeyDown(KeyCode.Escape) && activeSettings == null)
         {
             activeSettings = Instantiate(settingsCanvas) as GameObject;
@@ -920,11 +935,18 @@ public class Player : MonoBehaviour
                 dir *= spikeKnockbackPower;
                 velocityX = dir.x;
                 velocityY = dir.y;
-                PickupFlame(collision.GetComponent<Collectible>().fireAmount);
-                audioSource.PlayOneShot(hitSnow);
+                if (!invincible)
+                {
+                    PickupFlame(collision.GetComponent<Collectible>().fireAmount);
+                    invincible = true;
+                    invicinbilityTimer = invicinbilityTime;
+                    audioSource.PlayOneShot(hitSnow);
+                }
+
             }
             else
             {
+
                 PickupFlame(collision.GetComponent<Collectible>().fireAmount);
                 audioSource.PlayOneShot(pickUp, 1);
                 Destroy(collision.gameObject);
