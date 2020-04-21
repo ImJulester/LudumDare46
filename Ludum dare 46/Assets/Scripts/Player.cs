@@ -68,6 +68,9 @@ public class Player : MonoBehaviour
     public GameObject deathPrefab;
     private AudioSource audioSource;
 
+    public GameObject settingsCanvas;
+    public GameObject finalCanvas;
+
     [Header("audio clips")]
     public AudioClip hitSnow;
     public AudioClip jump;
@@ -80,6 +83,9 @@ public class Player : MonoBehaviour
 
     PlayerState state = PlayerState.idle;
 
+    private GameObject activeSettings;
+
+    
 
     // Start is called before the first frame update
     void Start()
@@ -105,7 +111,12 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
-
+        if (Input.GetKeyDown(KeyCode.Escape) && activeSettings == null)
+        {
+            activeSettings = Instantiate(settingsCanvas) as GameObject;
+            activeSettings.GetComponent<Settings>().SetVolumes();
+            Time.timeScale = 0;
+        }
        
         if(state == PlayerState.dying)
         {
@@ -114,6 +125,8 @@ public class Player : MonoBehaviour
             Debug.Log("DEAD");
         }
         ManageFlame();
+
+
 
         if (state == PlayerState.crouch)
         {
@@ -921,6 +934,12 @@ public class Player : MonoBehaviour
         if(collision.gameObject.tag == "Portal")
         {
             SceneManager.LoadScene("FinalLevel 2");
+        }
+        if (collision.gameObject.tag == "FinalPortal")
+        {
+            state = PlayerState.dying;
+            died = true;
+            Instantiate(finalCanvas);
         }
     }
 }
