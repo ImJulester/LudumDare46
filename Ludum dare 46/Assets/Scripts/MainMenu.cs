@@ -11,6 +11,8 @@ public class MainMenu : MonoBehaviour
     public GameObject mainMenuCanvas;
     public GameObject settings;
 
+    public bool instaStart;
+
     public float startGameSmoothRate = 1f;
 
     float startGameValue;
@@ -25,6 +27,11 @@ public class MainMenu : MonoBehaviour
         MenuCameraSize = thisCamera.orthographicSize;
         startPos = transform.position;
         secondCanvas.SetActive(false);
+
+        if (instaStart)
+        {
+            StartGame();
+        }
     }
 
     // Update is called once per frame
