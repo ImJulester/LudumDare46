@@ -59,4 +59,8 @@ public class Settings : MonoBehaviour
         Application.Quit();
 
     }
+    public void Restart()
+    {
+        SceneManager.LoadScene(0);
+    }
 }

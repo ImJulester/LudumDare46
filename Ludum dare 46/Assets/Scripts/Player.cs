@@ -69,6 +69,7 @@ public class Player : MonoBehaviour
     private AudioSource audioSource;
 
     public GameObject settingsCanvas;
+    public GameObject finalCanvas;
 
     [Header("audio clips")]
     public AudioClip hitSnow;
@@ -83,6 +84,8 @@ public class Player : MonoBehaviour
     PlayerState state = PlayerState.idle;
 
     private GameObject activeSettings;
+
+    
 
     // Start is called before the first frame update
     void Start()
@@ -931,6 +934,12 @@ public class Player : MonoBehaviour
         if(collision.gameObject.tag == "Portal")
         {
             SceneManager.LoadScene("FinalLevel 2");
+        }
+        if (collision.gameObject.tag == "FinalPortal")
+        {
+            state = PlayerState.dying;
+            died = true;
+            Instantiate(finalCanvas);
         }
     }
 }
